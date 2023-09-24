@@ -21,21 +21,92 @@
 
 // Bloque de comentarios multilínea.
 void BeginCommentPatternAction();
+// Regla que no hace nada, permite ignorar parte de la entrada.
+void IgnoredPatternAction(const char * lexeme, const int length);
+
 void EndCommentPatternAction();
 
-// Patrones terminales del lenguaje diseñado.
-token AdditionOperatorPatternAction();
-token CloseParenthesisPatternAction();
-token DivisionOperatorPatternAction();
-token IntegerPatternAction(const char * lexeme, const int length);
-token MultiplicationOperatorPatternAction();
+void BeginStringPatternAction();
+
+token StringPatternAction(const char * lexeme, const int length);
+
+void EndStringPatternAction();
+
+void BeginSequencePatternAction();
+
+token KeyDownPatternAction();
+
+token KeyUpPatternAction();
+
+token KeyPatternAction(const char * lexeme, actionkey_t key);
+
+void EndSequencePatternAction();
+
+token OperatorPatternAction(const char * lexeme, const int length);
+
+token AssignmentOperatorPatternAction();
+
 token OpenParenthesisPatternAction();
-token SubtractionOperatorPatternAction();
+
+token CloseParenthesisPatternAction();
+
+token OpenBracePatternAction();
+
+token CloseBracePatternAction();
+
+token OpenBracketPatternAction();
+
+token CloseBracketPatternAction();
+
+token CommaPatternAction();
+
+token SemicolonPatternAction();
+
+token ColonPatternAction();
+
+token DotPatternAction();
+
+token XPathOperatorPatternAction();
+// Patrones terminales del lenguaje diseñado.
+token ModulePatternAction();
+
+token SuitePatternAction();
+
+token BeforeAllPatternAction();
+
+token AfterAllPatternAction();
+
+token AssertTruePatternAction();
+
+token AssertFalsePatternAction();
+
+token AssertEqualsPatternAction();
+
+token AssertNotEqualsPatternAction();
+
+token RetryPatternAction();
+
+token TryPatternAction();
+
+token CatchPatternAction();
+
+token FinallyPatternAction();
+
+token VarPatternAction();
+
+token FunctionPatternAction();
+
+token ReturnPatternAction();
+
+token BooleanPatternAction(const char * lexeme, bool_t boolean);
+
+token NamePatternAction(const char * lexeme, const int length);
+
+token IntegerPatternAction(const char * lexeme, const int length);
 
 // Patrón desconocido, permite abortar debido a un error de sintaxis.
 token UnknownPatternAction(const char * lexeme, const int length);
 
-// Regla que no hace nada, permite ignorar parte de la entrada.
-void IgnoredPatternAction(const char * lexeme, const int length);
+
 
 #endif
