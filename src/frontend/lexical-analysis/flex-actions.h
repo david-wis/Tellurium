@@ -26,11 +26,7 @@ void IgnoredPatternAction(const char * lexeme, const int length);
 
 void EndCommentPatternAction();
 
-void BeginStringPatternAction();
-
 token StringPatternAction(const char * lexeme, const int length);
-
-void EndStringPatternAction();
 
 void BeginSequencePatternAction();
 
@@ -42,7 +38,9 @@ token KeyPatternAction(const char * lexeme, actionkey_t key);
 
 void EndSequencePatternAction();
 
-token OperatorPatternAction(const char * lexeme, const int length);
+token BinaryOperatorPatternAction(const char * lexeme, const int length);
+
+token UnaryOperatorPatternAction(const char * lexeme, const int length);
 
 token AssignmentOperatorPatternAction();
 
@@ -103,6 +101,8 @@ token BooleanPatternAction(const char * lexeme, bool_t boolean);
 token NamePatternAction(const char * lexeme, const int length);
 
 token IntegerPatternAction(const char * lexeme, const int length);
+
+token NumberPatternAction(const char * lexeme, const int length);
 
 // Patrón desconocido, permite abortar debido a un error de sintaxis.
 token UnknownPatternAction(const char * lexeme, const int length);

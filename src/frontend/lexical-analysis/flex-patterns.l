@@ -15,17 +15,18 @@
 
 /* Contextos de Flex. */
 %x COMMENT
-%x STRING
 %x SEQUENCE
 /* %x TEMPLATE_STRING */
 
 /* Patrones reutilizables. */
+string          \"([^\\\"]|\\.)*\"  
 digit			      [0-9]
 endline			    [(\r)?\n]
 whitespace		  [ \f\n\r\t\v]
 char            [a-zA-Z]
 name            {char}({char}|{digit})*
-number           [+-]?({digit}*[.])?{digit}+
+number           [-]?({digit}*[.])?{digit}+
+single_line_comment  "//".*
 /* url             [-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) */
 
 %%
@@ -35,54 +36,53 @@ number           [+-]?({digit}*[.])?{digit}+
 <COMMENT>{endline}+				{ IgnoredPatternAction(yytext, yyleng); }
 <COMMENT>"*/"							{ EndCommentPatternAction(); BEGIN(INITIAL); }
 
-"\""                      { BEGIN(STRING); BeginStringPatternAction(); }
-<STRING>[^"]*             { StringPatternAction(yytext, yyleng); }
-<STRING>"\""              { EndStringPatternAction(); BEGIN(INITIAL); }
+{single_line_comment}    { IgnoredPatternAction(yytext, yyleng); }  
 
 "<|"                      { BEGIN(SEQUENCE); BeginSequencePatternAction(); }
-<SEQUENCE>"+"             { KeyDownPatternAction(); }        
-<SEQUENCE>"-"             { KeyUpPatternAction(); } 
+<SEQUENCE>"+"             { return KeyDownPatternAction(); }        
+<SEQUENCE>"-"             { return KeyUpPatternAction(); } 
 
-<SEQUENCE>"CONTROL"       { KeyPatternAction(yytext, CONTROL); }
-<SEQUENCE>"SHIFT"         { KeyPatternAction(yytext, SHIFT); }
-<SEQUENCE>"ALT"           { KeyPatternAction(yytext, ALT); }
+<SEQUENCE>"CONTROL"       { return KeyPatternAction(yytext, CONTROL); }
+<SEQUENCE>"SHIFT"         { return KeyPatternAction(yytext, SHIFT); }
+<SEQUENCE>"ALT"           { return KeyPatternAction(yytext, ALT); }
 
-<SEQUENCE>"LEFT"          { KeyPatternAction(yytext, LEFT); }
-<SEQUENCE>"RIGHT"         { KeyPatternAction(yytext, RIGHT); }
-<SEQUENCE>"UP"            { KeyPatternAction(yytext, UP); }   
-<SEQUENCE>"DOWN"          { KeyPatternAction(yytext, DOWN); }
+<SEQUENCE>"LEFT"          { return KeyPatternAction(yytext, LEFT); }
+<SEQUENCE>"RIGHT"         { return KeyPatternAction(yytext, RIGHT); }
+<SEQUENCE>"UP"            { return KeyPatternAction(yytext, UP); }   
+<SEQUENCE>"DOWN"          { return KeyPatternAction(yytext, DOWN); }
 
-<SEQUENCE>"ENTER"         { KeyPatternAction(yytext, ENTER); }
-<SEQUENCE>"SPACE"         { KeyPatternAction(yytext, SPACE); }  
-<SEQUENCE>"BACKSPACE"     { KeyPatternAction(yytext, BACKSPACE); }
-<SEQUENCE>"DELETE"        { KeyPatternAction(yytext, DELETE); } 
-<SEQUENCE>"TAB"           { KeyPatternAction(yytext, TAB); }
-<SEQUENCE>"ESCAPE"        { KeyPatternAction(yytext, ESCAPE); }
-<SEQUENCE>"PAGEUP"        { KeyPatternAction(yytext, PAGE_UP); }
-<SEQUENCE>"PAGEDOWN"      { KeyPatternAction(yytext, PAGE_DOWN); }
-<SEQUENCE>"END"           { KeyPatternAction(yytext, END); }
-<SEQUENCE>"HOME"          { KeyPatternAction(yytext, HOME); }
+<SEQUENCE>"ENTER"         { return KeyPatternAction(yytext, ENTER); }
+<SEQUENCE>"SPACE"         { return KeyPatternAction(yytext, SPACE); }  
+<SEQUENCE>"BACKSPACE"     { return KeyPatternAction(yytext, BACKSPACE); }
+<SEQUENCE>"DELETE"        { return KeyPatternAction(yytext, DELETE); } 
+<SEQUENCE>"TAB"           { return KeyPatternAction(yytext, TAB); }
+<SEQUENCE>"ESCAPE"        { return KeyPatternAction(yytext, ESCAPE); }
+<SEQUENCE>"PAGEUP"        { return KeyPatternAction(yytext, PAGE_UP); }
+<SEQUENCE>"PAGEDOWN"      { return KeyPatternAction(yytext, PAGE_DOWN); }
+<SEQUENCE>"END"           { return KeyPatternAction(yytext, END); }
+<SEQUENCE>"HOME"          { return KeyPatternAction(yytext, HOME); }
 
-<SEQUENCE>"\""            { BEGIN(STRING); BeginStringPatternAction(); }
+<SEQUENCE>{string}        { return StringPatternAction(yytext, yyleng); }
 
 <SEQUENCE>"|>"            { EndSequencePatternAction(); BEGIN(INITIAL); }
 
-"+"											  { return OperatorPatternAction(yytext, yyleng); }
-"-"											  { return OperatorPatternAction(yytext, yyleng); }
-"*"											  { return OperatorPatternAction(yytext, yyleng); }
-"/"											  { return OperatorPatternAction(yytext, yyleng); }
-"%"											  { return OperatorPatternAction(yytext, yyleng); }
-"<"											  { return OperatorPatternAction(yytext, yyleng); }
-">"											  { return OperatorPatternAction(yytext, yyleng); }
-"<="											{ return OperatorPatternAction(yytext, yyleng); }
-">="											{ return OperatorPatternAction(yytext, yyleng); }
-"&&"											{ return OperatorPatternAction(yytext, yyleng); }
-"||"											{ return OperatorPatternAction(yytext, yyleng); }
-"!"											  { return OperatorPatternAction(yytext, yyleng); }
-"=="									    { return OperatorPatternAction(yytext, yyleng); }
-"==="									    { return OperatorPatternAction(yytext, yyleng); }
-"!="									    { return OperatorPatternAction(yytext, yyleng); }
-"!=="									    { return OperatorPatternAction(yytext, yyleng); }
+"+"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"-"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"*"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"/"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"%"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"<"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+">"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"<="											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+">="											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+"&&"											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+"||"											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+"=="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"==="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"!="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"!=="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+
+"!"											  { return UnaryOperatorPatternAction(yytext, yyleng); }
 
 "="											  { return AssignmentOperatorPatternAction(); }
 "("											  { return OpenParenthesisPatternAction(); }
@@ -126,11 +126,13 @@ number           [+-]?({digit}*[.])?{digit}+
 "true"                    { return BooleanPatternAction(yytext, TRUE); }
 "false"                   { return BooleanPatternAction(yytext, FALSE); }
 
-{name}                    { return NamePatternAction(yytext, yyleng); }
-{number}									{ return IntegerPatternAction(yytext, yyleng); }
+{name}                      { return NamePatternAction(yytext, yyleng); }
+{digit}+				    { return IntegerPatternAction(yytext, yyleng); }
+{number}				    { return NumberPatternAction(yytext, yyleng); }
+{string}                    { return StringPatternAction(yytext, yyleng); }
 
-{whitespace}+							{ IgnoredPatternAction(yytext, yyleng); }
+{whitespace}+				{ IgnoredPatternAction(yytext, yyleng); }
 
-.											    { return UnknownPatternAction(yytext, yyleng); }
+.							{ return UnknownPatternAction(yytext, yyleng); }
 
 %%

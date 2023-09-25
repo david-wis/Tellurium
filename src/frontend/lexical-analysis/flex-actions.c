@@ -52,19 +52,11 @@ void EndCommentPatternAction() {
 *  STRING CONTEXT
 */
 
-void BeginStringPatternAction() {
-	LogDebug("[Flex] [STRING] BeginStringPatternAction..............................");
-}
-
 token StringPatternAction(const char * lexeme, const int length) {
 	char * lexemeCopy = copyLexeme(lexeme, length);
 	LogDebug("[Flex] StringPatternAction: '%s' (length = %d).", lexemeCopy, length);
 	yylval.string = lexemeCopy;
 	return STRING;
-}
-
-void EndStringPatternAction() {
-	LogDebug("[Flex] [STRING] EndStringPatternAction................................");
 }
 
 void BeginSequencePatternAction() {
@@ -93,11 +85,18 @@ void EndSequencePatternAction() {
 	LogDebug("[Flex] [SEQUENCE] EndSequencePatternAction............................");
 }
 
-token OperatorPatternAction(const char * lexeme, const int length) {
-	LogDebug("[Flex] IntegerPatternAction: '%s' (length = %d).", lexeme, length);
+token BinaryOperatorPatternAction(const char * lexeme, const int length) {
+	LogDebug("[Flex] BinaryOperatorPatternAction: '%s' (length = %d).", lexeme, length);
 	char * lexemeCopy = copyLexeme(lexeme, length);
 	yylval.operator = lexemeCopy;
-	return OPERATOR;
+	return BINARY_OPERATOR;
+}
+
+token UnaryOperatorPatternAction(const char * lexeme, const int length) {
+	LogDebug("[Flex] UnaryOperatorPatternAction: '%s' (length = %d).", lexeme, length);
+	char * lexemeCopy = copyLexeme(lexeme, length);
+	yylval.operator = lexemeCopy;
+	return UNARY_OPERATOR;
 }
 
 token AssignmentOperatorPatternAction() {
@@ -282,6 +281,15 @@ token IntegerPatternAction(const char * lexeme, const int length) {
 	free(lexemeCopy);
 	return INTEGER;
 }
+
+token NumberPatternAction(const char * lexeme, const int length) {
+	LogDebug("[Flex] NumberPatternAction: '%s' (length = %d).", lexeme, length);
+	char * lexemeCopy = copyLexeme(lexeme, length);
+	yylval.number = lexemeCopy;
+	free(lexemeCopy);
+	return INTEGER;
+}
+
 
 token UnknownPatternAction(const char * lexeme, const int length) {
 	char * lexemeCopy = copyLexeme(lexeme, length);
