@@ -84,7 +84,14 @@ single_line_comment  "//".*
 
 "!"											  { return UnaryOperatorPatternAction(yytext, yyleng); }
 
-"="											  { return AssignmentOperatorPatternAction(); }
+"="											      { return AssignmentOperatorPatternAction(yytext, yyleng); }
+"+="											  { return AssignmentOperatorPatternAction(yytext, yyleng); }
+"-="											  { return AssignmentOperatorPatternAction(yytext, yyleng); }
+"*="											  { return AssignmentOperatorPatternAction(yytext, yyleng); }
+"/="											  { return AssignmentOperatorPatternAction(yytext, yyleng); }
+"%="											  { return AssignmentOperatorPatternAction(yytext, yyleng); }
+"&&="									          { return AssignmentOperatorPatternAction(yytext, yyleng); }
+"||="										      { return AssignmentOperatorPatternAction(yytext, yyleng); }
 "("											  { return OpenParenthesisPatternAction(); }
 ")"											  { return CloseParenthesisPatternAction(); }
 "{"											  { return OpenBracePatternAction(); } 
@@ -112,13 +119,12 @@ single_line_comment  "//".*
 "catch"                   { return CatchPatternAction(); }
 "finally"                 { return FinallyPatternAction(); }
 
-"if"                      { }
-"else"                    { }
-"while"                   { }
-"for"                     { }
-"break"                   { }
-"continue"                { }
+"if"                      { return IfPatternAction(); }
+"else"                    { return ElsePatternAction(); }
+"while"                   { return WhilePatternAction(); }
+"for"                     { return ForPatternAction(); }
 
+"=>"                      { return ArrowPatternAction(); }
 "var"                     { return VarPatternAction(); }
 "function"                { return FunctionPatternAction(); }
 "return"                  { return ReturnPatternAction(); }

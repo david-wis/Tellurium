@@ -99,9 +99,10 @@ token UnaryOperatorPatternAction(const char * lexeme, const int length) {
 	return UNARY_OPERATOR;
 }
 
-token AssignmentOperatorPatternAction() {
+token AssignmentOperatorPatternAction(const char * lexeme, const int length) {
 	LogDebug("[Flex] AssignmentOperatorPatternAction: '='.");
-	yylval.token = ASSIGNMENT_OPERATOR;
+	char * lexemeCopy = copyLexeme(lexeme, length);
+	yylval.operator = lexemeCopy;
 	return ASSIGNMENT_OPERATOR;
 }
 
@@ -241,6 +242,36 @@ token FinallyPatternAction() {
 	LogDebug("[Flex] FinallyPatternAction.");
 	yylval.token = FINALLY;
 	return FINALLY;
+}
+
+token IfPatternAction() {
+	LogDebug("[Flex] IfPatternAction.");
+	yylval.token = IF;
+	return IF;
+}
+
+token ElsePatternAction() {
+	LogDebug("[Flex] ElsePatternAction.");
+	yylval.token = ELSE;
+	return ELSE;
+}
+
+token ForPatternAction() {
+	LogDebug("[Flex] ForPatternAction.");
+	yylval.token = FOR;
+	return FOR;
+}
+
+token WhilePatternAction() {
+	LogDebug("[Flex] WhilePatternAction.");
+	yylval.token = WHILE;
+	return WHILE;
+}
+
+token ArrowPatternAction() {
+	LogDebug("[Flex] ArrowPatternAction.");
+	yylval.token = ARROW;
+	return ARROW;
 }
 
 token VarPatternAction() {

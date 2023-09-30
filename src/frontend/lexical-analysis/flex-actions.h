@@ -42,7 +42,7 @@ token BinaryOperatorPatternAction(const char * lexeme, const int length);
 
 token UnaryOperatorPatternAction(const char * lexeme, const int length);
 
-token AssignmentOperatorPatternAction();
+token AssignmentOperatorPatternAction(const char * lexeme, const int length);
 
 token OpenParenthesisPatternAction();
 
@@ -65,6 +65,7 @@ token ColonPatternAction();
 token DotPatternAction();
 
 token XPathOperatorPatternAction();
+
 // Patrones terminales del lenguaje diseñado.
 token ModulePatternAction();
 
@@ -90,6 +91,18 @@ token CatchPatternAction();
 
 token FinallyPatternAction();
 
+token IfPatternAction();
+
+token ElsePatternAction();
+
+token ForPatternAction();
+
+token WhilePatternAction();
+
+token ArrowPatternAction();
+
+token ArrowPatternAction();
+
 token VarPatternAction();
 
 token FunctionPatternAction();
@@ -106,7 +119,5 @@ token NumberPatternAction(const char * lexeme, const int length);
 
 // Patrón desconocido, permite abortar debido a un error de sintaxis.
 token UnknownPatternAction(const char * lexeme, const int length);
-
-
 
 #endif

@@ -1,5 +1,0 @@
-Suite {
-    Module TestFallido1 {
-        assertTrue 1 + 1 == 2
-    }
-}

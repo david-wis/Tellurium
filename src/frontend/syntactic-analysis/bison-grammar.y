@@ -21,16 +21,30 @@
 
 	// No-terminales (frontend).
 	int program;
-	int literal;
 	int suite;
-	int module;
 	int moduleList;
-	int function;
+	int module;
 	int scope;
+	int statementList;
 	int statement;
+	int function;
+	int control;
+	int ifControl;
+	int elseControl;
+	int forExpression;
+	int tryException;
+	int retryException;
+	int assertion;
 	int expression;
+	int attributeList;
+	int attribute;
+	int variable;
+	int lambda;
 	int sequence;
-
+	int actionList;
+	int action;
+	int parameters;	
+	int literal;
 
 	// Terminales.
 	token token;
@@ -84,11 +98,18 @@
 %token <token> CATCH
 %token <token> FINALLY
 
+%token <token> IF
+%token <token> ELSE
+%token <token> FOR
+%token <token> WHILE
+
+%token <token> ARROW
 %token <token> VAR
 %token <token> FUNCTION
 %token <token> RETURN
 
 %token <integer> INTEGER
+%token <number> NUMBER
 %token <string> STRING
 %token <boolean> BOOLEAN
 
@@ -96,16 +117,30 @@
 
 // Tipos de dato para los no-terminales generados desde Bison.
 %type <program> program
-
-%type <literal> literal
 %type <suite> suite
-%type <module> module
 %type <moduleList> moduleList
-%type <function> function
+%type <module> module
 %type <scope> scope
+%type <statementList> statementList
 %type <statement> statement
+%type <function> function
+%type <control> control
+%type <ifControl> if
+%type <elseControl> else
+%type <forExpression> forExpression
+%type <tryException> try
+%type <retryException> retry
+%type <assertion> assertion
 %type <expression> expression
-
+%type <attributeList> attributeList
+%type <attribute> attribute
+%type <variable> variable
+%type <lambda> lambda
+%type <sequence> sequence
+%type <actionList> actionList
+%type <action> action
+%type <parameters> parameters
+%type <literal> literal
 
 // El símbolo inicial de la gramatica.
 %start program
@@ -113,33 +148,30 @@
 %%
 
 
-
-program: scope													{ $$ = ProgramGrammarAction(0); }
+program: statementList													{ $$ = ProgramGrammarAction(0); }
 	|	 suite													{ $$ = ProgramGrammarAction(0);}
 	;
 
-
 suite:  SUITE OPEN_BRACE moduleList CLOSE_BRACE	   				{ } // suite -> Suite { moduleList }
-	|	 SUITE NAME OPEN_BRACE moduleList CLOSE_BRACE			{ } // suite -> Suite NAME { moduleList }
+	|	SUITE NAME OPEN_BRACE moduleList CLOSE_BRACE			{ } // suite -> Suite NAME { moduleList }
+	;
+
+moduleList: %empty 											{ } // moduleList -> %empty
+	| moduleList module										{ } // moduleList -> moduleList module
+	;
+
+module: MODULE scope 								{ } // module -> Module scope
+	| MODULE NAME scope 							{ } // module -> Module NAME scope
+	| BEFORE_ALL scope 								{ } // module -> BeforeAll scope
+	| AFTER_ALL NAME scope 							{ } // module -> AfterAll scope
 	;
 
 
-moduleList: moduleList module									{ } // moduleList -> moduleList module
-	|   module													{ } // moduleList -> module
-	;
+scope: OPEN_BRACE statementList CLOSE_BRACE  					{ } // scope -> { statementList }
 
-
-module: MODULE OPEN_BRACE scope CLOSE_BRACE						{ } // module -> Module { scope }
-	| MODULE NAME OPEN_BRACE scope CLOSE_BRACE					{ } // module -> Module NAME { scope }
-	| BEFORE_ALL OPEN_BRACE scope CLOSE_BRACE					{ } // module -> BeforeAll { scope }
-	| AFTER_ALL NAME OPEN_BRACE scope CLOSE_BRACE				{ } // module -> AfterAll { scope }
-	;
-
-function: FUNCTION NAME OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS OPEN_BRACE scope CLOSE_BRACE	{ } // function -> "function" NAME ( parameters ) { scope }
-
-scope: scope statement 											{ } // scope -> scope statement
-	|  statement												{ } // scope -> statement
-	;
+statementList: %empty
+	| statementList statement									{ } // statementList -> statementList statement
+	; 
 
 statement: expression SEMICOLON									{ } // statement -> expression ;
 	| VAR NAME ASSIGNMENT_OPERATOR expression SEMICOLON			{ } // statement -> var NAME = expression ;
@@ -148,8 +180,40 @@ statement: expression SEMICOLON									{ } // statement -> expression ;
 	| function 													{ } // statement -> function
 	| RETURN expression SEMICOLON								{ } // statement -> return expression ;
 	| RETURN SEMICOLON											{ } // statement -> return ;
+	| control													{ } 
 	| assertion expression SEMICOLON							{ } // statement -> assertion expression ;
 	; 
+
+function: FUNCTION NAME OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS scope { } // function -> "function" NAME ( parameters ) scope
+	| FUNCTION NAME OPEN_PARENTHESIS CLOSE_PARENTHESIS scope { }  // function -> "function" NAME ( ) scope
+	| FUNCTION OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS scope { }  // function -> "function" NAME ( ) scope
+	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope { }  // function -> "function" NAME ( ) scope
+
+control: if 																									    { }
+	| FOR OPEN_PARENTHESIS forExpression SEMICOLON forExpression SEMICOLON forExpression CLOSE_PARENTHESIS scope    { }
+	| WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS scope														{ }
+	;
+
+if: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS scope 				{ } // if -> "if" ( expression ) scope
+	| IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS scope else		{ } // if -> "if" ( expression ) scope else
+	;
+
+else: ELSE if 															{ } // else -> "else" if
+	| ELSE scope													  	{ } // else -> "else" scope
+	;
+
+forExpression: %empty 													{ }
+	| expression														{ } // forExpression -> expression
+	| variable ASSIGNMENT_OPERATOR expression							{ } // forExpression -> variable = expression
+	;
+
+try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope												{ } // try -> "try" scope retry "catch" ( NAME ) scope
+	| TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope FINALLY scope									{ } // try -> "try" scope retry "catch" ( NAME ) scope "finally" scope
+	;
+
+retry: %empty																			{ } 
+	| RETRY OPEN_PARENTHESIS NAME COMMA INTEGER CLOSE_PARENTHESIS scope					{ } // retry -> "retry" ( NAME , INTEGER ) scope
+	| RETRY OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope								{ } // retry -> "retry" ( NAME ) scope
 
 assertion: ASSERT_TRUE											{ } // assertion -> assert_true	
 	| ASSERT_FALSE												{ } // assertion -> assert_false
@@ -158,20 +222,55 @@ assertion: ASSERT_TRUE											{ } // assertion -> assert_true
 	;	
 
 expression: literal 											         			{ } // expression -> literal
-	| NAME																			{ } // expression -> NAME
+	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // variable -> ( variable )
+	| variable																		{ } // expression -> NAME
 	| OPEN_PARENTHESIS NAME ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS		{ } // expression -> ( NAME = expression )
 	| expression BINARY_OPERATOR expression											{ } // expression -> expression BINARY_OPERATOR expression
 	| UNARY_OPERATOR expression														{ } // expression -> UNARY_OPERATOR expression
-	| NAME  OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS							{ } // expression -> NAME ( parameters )
-	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // expression -> ( expression )
+	| XPATH_OPERATOR STRING CLOSE_PARENTHESIS										{ } // expression -> XPATH_OPERATOR  
+	| OPEN_BRACKET CLOSE_BRACKET													{ } // expression -> [ ]
+	| OPEN_BRACKET parameters CLOSE_BRACKET											{ } // expression -> [ parameters ] 
+	| OPEN_BRACE attributeList CLOSE_BRACE											{ } // expression -> { attributeList } 
+	| lambda
 	;
 
-parameters: %empty 																	{ }
- 	| parameters COMMA expression													{ } // parameters -> parameters , expression
+attributeList: %empty	
+	| attributeList COMMA attribute													{ } // attributeList -> attributeList , attribute
+	| attribute																		{ } // attributeList -> attribute
+	;
+
+attribute: NAME COLON expression													{ } // attribute -> NAME : expression
+
+variable: NAME 																		{ } // variable -> NAME
+	| variable OPEN_BRACKET expression CLOSE_BRACKET								{ } // variable -> NAME [ expression ]
+	| variable DOT variable															{ } // variable -> variable . variable	
+	| variable OPEN_PARENTHESIS CLOSE_PARENTHESIS									{ } // variable -> NAME ()	
+	| variable OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS						{ } // variable -> NAME ( parameters )	
+	;
+
+lambda: OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS ARROW expression				{ } // lambda -> ( parameters ) -> expression
+	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW expression							{ } // lambda -> () -> expression
+	| OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS ARROW scope						{ } // lambda -> ( parameters ) -> scope
+	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW scope								{ } // lambda -> () -> scope
+	;
+
+sequence: actionList																{ } // sequence -> actionList
+	;
+
+actionList: actionList action														{ } // actionList -> actionList action
+	| %empty																		{ } // actionList -> %empty
+	;
+
+action: KEY 																		{ } // action -> KEY
+	| KEY_DOWN KEY	 																{ } // action -> + KEY
+	| KEY_UP KEY																	{ } // action -> - KEY
+	| STRING	 																	{ } // action -> STRING
+	;
+
+parameters: parameters COMMA expression													{ } // parameters -> parameters , expression
 	| expression																	{ } // parameters -> NAME
 	;
 
-
-literal: INTEGER | STRING | BOOLEAN							                    	{ } // literal -> INTEGER | STRING | BOOLEAN
+literal: INTEGER | NUMBER | STRING | BOOLEAN							            { } // literal -> INTEGER | STRING | BOOLEAN
 	;
 %%
