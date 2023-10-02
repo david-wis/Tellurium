@@ -59,8 +59,10 @@ token StringPatternAction(const char * lexeme, const int length) {
 	return STRING;
 }
 
-void BeginSequencePatternAction() {
+token BeginSequencePatternAction() {
 	LogDebug("[Flex] [SEQUENCE] BeginSequencePatternAction..........................");
+	yylval.token = BEGIN_SEQUENCE;
+	return BEGIN_SEQUENCE;
 }
 
 token KeyDownPatternAction() {
@@ -81,8 +83,10 @@ token KeyPatternAction(const char * lexeme, actionkey_t key) {
 	return KEY;
 }
 
-void EndSequencePatternAction() {
+token EndSequencePatternAction() {
 	LogDebug("[Flex] [SEQUENCE] EndSequencePatternAction............................");
+	yylval.token = END_SEQUENCE;
+	return END_SEQUENCE;
 }
 
 token BinaryOperatorPatternAction(const char * lexeme, const int length) {

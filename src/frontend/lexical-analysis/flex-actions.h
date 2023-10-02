@@ -28,7 +28,7 @@ void EndCommentPatternAction();
 
 token StringPatternAction(const char * lexeme, const int length);
 
-void BeginSequencePatternAction();
+token BeginSequencePatternAction();
 
 token KeyDownPatternAction();
 
@@ -36,7 +36,7 @@ token KeyUpPatternAction();
 
 token KeyPatternAction(const char * lexeme, actionkey_t key);
 
-void EndSequencePatternAction();
+token EndSequencePatternAction();
 
 token BinaryOperatorPatternAction(const char * lexeme, const int length);
 

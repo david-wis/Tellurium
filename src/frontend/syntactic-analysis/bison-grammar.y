@@ -35,7 +35,6 @@
 	int forExpression;
 	int tryException;
 	int retryException;
-	int assertion;
 	int expression;
 	int lambda;
 	int object;
@@ -67,7 +66,8 @@
 
 // IDs y tipos de los tokens terminales generados desde Flex.
 
-
+%token <token> BEGIN_SEQUENCE
+%token <token> END_SEQUENCE
 %token <token> KEY_DOWN
 %token <token> KEY_UP
 %token <token> KEY
@@ -133,7 +133,6 @@
 %type <forExpression> forExpression
 %type <tryException> try
 %type <retryException> retry
-%type <assertion> assertion
 %type <expression> expression
 %type <lambda> lambda
 %type <object> object
@@ -151,7 +150,7 @@
 
 %%
 
-program: statementList													{ $$ = ProgramGrammarAction(0); }
+program: statementList											{ $$ = ProgramGrammarAction(0); }
 	|	 suite													{ $$ = ProgramGrammarAction(0);}
 	;
 
@@ -159,46 +158,48 @@ suite:  SUITE OPEN_BRACE moduleList CLOSE_BRACE	   				{ } // suite -> Suite { m
 	|	SUITE NAME OPEN_BRACE moduleList CLOSE_BRACE			{ } // suite -> Suite NAME { moduleList }
 	;
 
-moduleList: %empty 											{ } // moduleList -> %empty
-	| moduleList module										{ } // moduleList -> moduleList module
+moduleList: %empty 												{ } // moduleList -> 
+	| moduleList module											{ } // moduleList -> moduleList module
 	;
 
-module: MODULE scope 								{ } // module -> Module scope
-	| MODULE NAME scope 							{ } // module -> Module NAME scope
-	| BEFORE_ALL scope 								{ } // module -> BeforeAll scope
-	| AFTER_ALL NAME scope 							{ } // module -> AfterAll scope
+module: MODULE scope 											{ } // module -> Module scope
+	| MODULE NAME scope 										{ } // module -> Module NAME scope
+	| BEFORE_ALL scope 											{ } // module -> BeforeAll scope
+	| AFTER_ALL NAME scope 										{ } // module -> AfterAll scope
 	;
 
 
 scope: OPEN_BRACE statementList CLOSE_BRACE  					{ } // scope -> { statementList }
+	;
 
-statementList: %empty
+statementList: %empty 											{ } // statementList -> 
 	| statementList statement									{ } // statementList -> statementList statement
 	; 
 
 statement: expression SEMICOLON									{ } // statement -> expression ;
 	| VAR NAME ASSIGNMENT_OPERATOR expression SEMICOLON			{ } // statement -> var NAME = expression ;
 	| VAR NAME SEMICOLON										{ } // statement -> var NAME ;
-	| variable ASSIGNMENT_OPERATOR expression SEMICOLON				{ } // statement -> NAME = expression ;
+	| variable ASSIGNMENT_OPERATOR expression SEMICOLON			{ } // statement -> NAME = expression ;
 	| function 													{ } // statement -> function
 	| RETURN expression SEMICOLON								{ } // statement -> return expression ;
 	| RETURN SEMICOLON											{ } // statement -> return ;
-	| control													{ } 
+	| control													{ } // statement -> control
 	| ASSERT expression SEMICOLON								{ } // statement -> assert expression ; 
 	| ASSERT_COMPARE expression COMMA expression SEMICOLON		{ } // statement -> assert expression , expression ; 
 	; 
 
-function: FUNCTION NAME OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope { } // function -> "function" NAME ( parameters ) scope
-	| FUNCTION NAME OPEN_PARENTHESIS CLOSE_PARENTHESIS scope { }  // function -> "function" NAME ( ) scope
+function: FUNCTION NAME OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 	{ } // function -> "function" NAME ( parameters ) scope
+	| FUNCTION NAME OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 							{ }  // function -> "function" NAME ( ) scope
 	;
 
-parameterDefinitions: parameterDefinitions COMMA NAME									{ } // parameterDefinitions -> parameterDefinitions , NAME
+parameterDefinitions: parameterDefinitions COMMA NAME								{ } // parameterDefinitions -> parameterDefinitions , NAME
 	| NAME																			{ } // parameterDefinitions -> NAME
 	;
 	
-control: if 																									    { }
-	| FOR OPEN_PARENTHESIS forExpression SEMICOLON forExpression SEMICOLON forExpression CLOSE_PARENTHESIS scope    { }
-	| WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS scope														{ }
+control: if 																									    { } // control -> if
+	| FOR OPEN_PARENTHESIS forExpression SEMICOLON forExpression SEMICOLON forExpression CLOSE_PARENTHESIS scope    { } // control -> "for" ( forExpression ; forExpression ; forExpression ) scope
+	| WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS scope														{ } // control -> "while" ( expression ) scope
+	| try																											{ } // control -> try
 	;
 
 if: IF OPEN_PARENTHESIS expression CLOSE_PARENTHESIS scope 				{ } // if -> "if" ( expression ) scope
@@ -215,8 +216,8 @@ forExpression: %empty 													{ }
 	| VAR variable ASSIGNMENT_OPERATOR expression						{ } // forExpression -> var variable = expression
 	;
 
-try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope												{ } // try -> "try" scope retry "catch" ( NAME ) scope
-	| TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope FINALLY scope									{ } // try -> "try" scope retry "catch" ( NAME ) scope "finally" scope
+try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope						{ } // try -> "try" scope retry "catch" ( NAME ) scope
+	| TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope FINALLY scope			{ } // try -> "try" scope retry "catch" ( NAME ) scope "finally" scope
 	;
 
 retry: %empty																			{ } 
@@ -224,15 +225,21 @@ retry: %empty																			{ }
 	| RETRY OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope								{ } // retry -> "retry" ( NAME ) scope
 	;
 	
-expression: literal 											         			{ } // expression -> literal
-	| object																		{ } // expression -> object
-	| expression BINARY_OPERATOR expression											{ } // expression -> expression BINARY_OPERATOR expression
-	| UNARY_OPERATOR expression														{ } // expression -> UNARY_OPERATOR expression
-	| OPEN_BRACE attributeList CLOSE_BRACE											{ } // expression -> { attributeList } 
-	| lambda
+expression: operation																{ } // expression -> expression BINARY_OPERATOR expression
+	| lambda																		{ }
 	;
 
-attributeList: %empty	
+operation: operand 																	{ } // operation -> operand
+	| UNARY_OPERATOR operand														{ } // operation -> UNARY_OPERATOR operand
+	| operation BINARY_OPERATOR operand												{ } // operation -> operation BINARY_OPERATOR operand
+	;
+
+operand: literal 											         				{ } // operand -> literal
+	| object																		{ } // operand -> object
+	| OPEN_BRACE attributeList CLOSE_BRACE											{ } // operand -> { attributeList } 
+	;
+
+attributeList: %empty																{ }
 	| attributeList COMMA attribute													{ } // attributeList -> attributeList , attribute
 	| attribute																		{ } // attributeList -> attribute
 	;
@@ -240,7 +247,7 @@ attributeList: %empty
 attribute: NAME COLON expression													{ } // attribute -> NAME : expression
 	;																				
 
-object: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // object -> ( expression )
+object: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS								{ } // object -> ( expression )
 	| variable																		{ } // object -> variable
 	| XPATH_OPERATOR STRING CLOSE_PARENTHESIS										{ } // object -> $("string")
 	| OPEN_PARENTHESIS variable ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS	{ } // object -> ( variable = expression )
@@ -256,15 +263,13 @@ variable: NAME 																		{ } // variable -> NAME
 	| object DOT NAME																{ } // variable -> object . NAME
 	;
 
-lambda: OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS ARROW expression				{ } // lambda -> ( parameterDefinitions ) -> expression
-	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW expression										{ } // lambda -> () -> expression
-	| OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS ARROW scope						{ } // lambda -> ( parameterDefinitions ) -> scope
+lambda: OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS ARROW scope						{ } // lambda -> ( parameterDefinitions ) -> scope
 	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW scope											{ } // lambda -> () -> scope
 	| FUNCTION OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 					{ }  // lambda -> "function" NAME ( parameterDefinitions ) scope
 	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 										{ }  // lambda -> "function" NAME ( ) scope
 	;
 
-sequence: actionList																{ } // sequence -> actionList
+sequence: BEGIN_SEQUENCE actionList END_SEQUENCE									{ } // sequence -> actionList
 	;
 
 actionList: actionList action														{ } // actionList -> actionList action
@@ -277,10 +282,14 @@ action: KEY 																		{ } // action -> KEY
 	| STRING	 																	{ } // action -> STRING
 	;
 
-parameters: parameters COMMA expression													{ } // parameters -> parameters , expression
+parameters: parameters COMMA expression												{ } // parameters -> parameters , expression
 	| expression																	{ } // parameters -> NAME
 	;
 
-literal: INTEGER | NUMBER | STRING | BOOLEAN							            { } // literal -> INTEGER | STRING | BOOLEAN
+literal: INTEGER 																	{ } // literal -> INTEGER
+	| NUMBER 																		{ } // literal -> NUMBER
+	| STRING 																		{ } // literal -> STRING
+	| BOOLEAN							            								{ } // literal -> BOOLEAN
+	| sequence 																		{ } // literal -> NAME
 	;
 %%
