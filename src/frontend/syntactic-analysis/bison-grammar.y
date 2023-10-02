@@ -28,6 +28,7 @@
 	int statementList;
 	int statement;
 	int function;
+	int parameterDefinitions;
 	int control;
 	int ifControl;
 	int elseControl;
@@ -36,10 +37,11 @@
 	int retryException;
 	int assertion;
 	int expression;
+	int lambda;
+	int object;
 	int attributeList;
 	int attribute;
 	int variable;
-	int lambda;
 	int sequence;
 	int actionList;
 	int action;
@@ -55,6 +57,8 @@
 	char * name;
 	bool_t boolean;
 	actionkey_t key;
+	assertion_t assertionType;
+	cmp_assertion_t cmpAssertionType;
 }
 
 
@@ -88,10 +92,8 @@
 %token <token> BEFORE_ALL
 %token <token> AFTER_ALL
 
-%token <token> ASSERT_TRUE
-%token <token> ASSERT_FALSE
-%token <token> ASSERT_EQUALS
-%token <token> ASSERT_NOT_EQUALS
+%token <token> ASSERT
+%token <token> ASSERT_COMPARE
 
 %token <token> RETRY
 %token <token> TRY
@@ -124,6 +126,7 @@
 %type <statementList> statementList
 %type <statement> statement
 %type <function> function
+%type <parameterDefinitions> parameterDefinitions
 %type <control> control
 %type <ifControl> if
 %type <elseControl> else
@@ -132,10 +135,11 @@
 %type <retryException> retry
 %type <assertion> assertion
 %type <expression> expression
+%type <lambda> lambda
+%type <object> object
 %type <attributeList> attributeList
 %type <attribute> attribute
 %type <variable> variable
-%type <lambda> lambda
 %type <sequence> sequence
 %type <actionList> actionList
 %type <action> action
@@ -146,7 +150,6 @@
 %start program
 
 %%
-
 
 program: statementList													{ $$ = ProgramGrammarAction(0); }
 	|	 suite													{ $$ = ProgramGrammarAction(0);}
@@ -176,19 +179,23 @@ statementList: %empty
 statement: expression SEMICOLON									{ } // statement -> expression ;
 	| VAR NAME ASSIGNMENT_OPERATOR expression SEMICOLON			{ } // statement -> var NAME = expression ;
 	| VAR NAME SEMICOLON										{ } // statement -> var NAME ;
-	| NAME ASSIGNMENT_OPERATOR expression SEMICOLON				{ } // statement -> NAME = expression ;
+	| variable ASSIGNMENT_OPERATOR expression SEMICOLON				{ } // statement -> NAME = expression ;
 	| function 													{ } // statement -> function
 	| RETURN expression SEMICOLON								{ } // statement -> return expression ;
 	| RETURN SEMICOLON											{ } // statement -> return ;
 	| control													{ } 
-	| assertion expression SEMICOLON							{ } // statement -> assertion expression ;
+	| ASSERT expression SEMICOLON								{ } // statement -> assert expression ; 
+	| ASSERT_COMPARE expression COMMA expression SEMICOLON		{ } // statement -> assert expression , expression ; 
 	; 
 
-function: FUNCTION NAME OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS scope { } // function -> "function" NAME ( parameters ) scope
+function: FUNCTION NAME OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope { } // function -> "function" NAME ( parameters ) scope
 	| FUNCTION NAME OPEN_PARENTHESIS CLOSE_PARENTHESIS scope { }  // function -> "function" NAME ( ) scope
-	| FUNCTION OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS scope { }  // function -> "function" NAME ( ) scope
-	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope { }  // function -> "function" NAME ( ) scope
+	;
 
+parameterDefinitions: parameterDefinitions COMMA NAME									{ } // parameterDefinitions -> parameterDefinitions , NAME
+	| NAME																			{ } // parameterDefinitions -> NAME
+	;
+	
 control: if 																									    { }
 	| FOR OPEN_PARENTHESIS forExpression SEMICOLON forExpression SEMICOLON forExpression CLOSE_PARENTHESIS scope    { }
 	| WHILE OPEN_PARENTHESIS expression CLOSE_PARENTHESIS scope														{ }
@@ -205,6 +212,7 @@ else: ELSE if 															{ } // else -> "else" if
 forExpression: %empty 													{ }
 	| expression														{ } // forExpression -> expression
 	| variable ASSIGNMENT_OPERATOR expression							{ } // forExpression -> variable = expression
+	| VAR variable ASSIGNMENT_OPERATOR expression						{ } // forExpression -> var variable = expression
 	;
 
 try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope												{ } // try -> "try" scope retry "catch" ( NAME ) scope
@@ -214,22 +222,12 @@ try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope								
 retry: %empty																			{ } 
 	| RETRY OPEN_PARENTHESIS NAME COMMA INTEGER CLOSE_PARENTHESIS scope					{ } // retry -> "retry" ( NAME , INTEGER ) scope
 	| RETRY OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope								{ } // retry -> "retry" ( NAME ) scope
-
-assertion: ASSERT_TRUE											{ } // assertion -> assert_true	
-	| ASSERT_FALSE												{ } // assertion -> assert_false
-	| ASSERT_EQUALS												{ } // assertion -> assert_equals
-	| ASSERT_NOT_EQUALS											{ } // assertion -> assert_not_equals
-	;	
-
+	;
+	
 expression: literal 											         			{ } // expression -> literal
-	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // variable -> ( variable )
-	| variable																		{ } // expression -> NAME
-	| OPEN_PARENTHESIS NAME ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS		{ } // expression -> ( NAME = expression )
+	| object																		{ } // expression -> object
 	| expression BINARY_OPERATOR expression											{ } // expression -> expression BINARY_OPERATOR expression
 	| UNARY_OPERATOR expression														{ } // expression -> UNARY_OPERATOR expression
-	| XPATH_OPERATOR STRING CLOSE_PARENTHESIS										{ } // expression -> XPATH_OPERATOR  
-	| OPEN_BRACKET CLOSE_BRACKET													{ } // expression -> [ ]
-	| OPEN_BRACKET parameters CLOSE_BRACKET											{ } // expression -> [ parameters ] 
 	| OPEN_BRACE attributeList CLOSE_BRACE											{ } // expression -> { attributeList } 
 	| lambda
 	;
@@ -240,18 +238,30 @@ attributeList: %empty
 	;
 
 attribute: NAME COLON expression													{ } // attribute -> NAME : expression
+	;																				
 
-variable: NAME 																		{ } // variable -> NAME
-	| variable OPEN_BRACKET expression CLOSE_BRACKET								{ } // variable -> NAME [ expression ]
-	| variable DOT variable															{ } // variable -> variable . variable	
-	| variable OPEN_PARENTHESIS CLOSE_PARENTHESIS									{ } // variable -> NAME ()	
-	| variable OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS						{ } // variable -> NAME ( parameters )	
+object: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // object -> ( expression )
+	| variable																		{ } // object -> variable
+	| XPATH_OPERATOR STRING CLOSE_PARENTHESIS										{ } // object -> $("string")
+	| OPEN_PARENTHESIS variable ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS	{ } // object -> ( variable = expression )
+	| OPEN_BRACKET CLOSE_BRACKET													{ } // object -> [ ] (empty array)
+	| OPEN_BRACKET parameters CLOSE_BRACKET											{ } // object -> [ parameters ] (array with paraneters)		 */
+	| object OPEN_PARENTHESIS CLOSE_PARENTHESIS										{ } // object -> NAME ()	
+	| object OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS							{ } // object -> NAME ( parameters )	
 	;
 
-lambda: OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS ARROW expression				{ } // lambda -> ( parameters ) -> expression
-	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW expression							{ } // lambda -> () -> expression
-	| OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS ARROW scope						{ } // lambda -> ( parameters ) -> scope
-	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW scope								{ } // lambda -> () -> scope
+
+variable: NAME 																		{ } // variable -> NAME
+	| object OPEN_BRACKET expression CLOSE_BRACKET									{ } // variable -> NAME [ expression ]
+	| object DOT NAME																{ } // variable -> object . NAME
+	;
+
+lambda: OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS ARROW expression				{ } // lambda -> ( parameterDefinitions ) -> expression
+	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW expression										{ } // lambda -> () -> expression
+	| OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS ARROW scope						{ } // lambda -> ( parameterDefinitions ) -> scope
+	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW scope											{ } // lambda -> () -> scope
+	| FUNCTION OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 					{ }  // lambda -> "function" NAME ( parameterDefinitions ) scope
+	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 										{ }  // lambda -> "function" NAME ( ) scope
 	;
 
 sequence: actionList																{ } // sequence -> actionList

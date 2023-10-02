@@ -100,6 +100,7 @@ single_line_comment  "//".*
 "]"											  { return CloseBracketPatternAction(); } 
 ","											  { return CommaPatternAction(); }
 ";"											  { return SemicolonPatternAction(); }
+":"											  { return ColonPatternAction(); }
 "."											  { return DotPatternAction(); }
 
 "$("                      { return XPathOperatorPatternAction(); }
@@ -109,10 +110,10 @@ single_line_comment  "//".*
 "BeforeAll"               { return BeforeAllPatternAction(); }
 "AfterAll"                { return AfterAllPatternAction(); }
 
-"assertTrue"              { return AssertTruePatternAction(); }
-"assertFalse"             { return AssertFalsePatternAction(); }
-"assertEquals"            { return AssertEqualsPatternAction(); }
-"assertNotEquals"         { return AssertNotEqualsPatternAction(); }
+"assertTrue"              { return AssertPatternAction(); }
+"assertFalse"             { return AssertPatternAction(); }
+"assertEquals"            { return AssertComparePatternAction(); }
+"assertNotEquals"         { return AssertComparePatternAction(); }
 
 "retry"                   { return RetryPatternAction(); }
 "try"                     { return TryPatternAction(); }

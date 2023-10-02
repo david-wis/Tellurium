@@ -75,13 +75,9 @@ token BeforeAllPatternAction();
 
 token AfterAllPatternAction();
 
-token AssertTruePatternAction();
+token AssertPatternAction();
 
-token AssertFalsePatternAction();
-
-token AssertEqualsPatternAction();
-
-token AssertNotEqualsPatternAction();
+token AssertComparePatternAction();
 
 token RetryPatternAction();
 
@@ -98,8 +94,6 @@ token ElsePatternAction();
 token ForPatternAction();
 
 token WhilePatternAction();
-
-token ArrowPatternAction();
 
 token ArrowPatternAction();
 

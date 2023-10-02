@@ -1,19 +1,19 @@
 var animal = {
-    legs: 2,
+    legs: 4,
     heads: 5,
     eyes: 3,
     name: "Bob",
     actions: {
         greet: function() {
             return "Hello, my name is " + this.name;
-        }
+        },
         eat: (food) => {
             return "I am eating " + food;
         }
     } 
-}
+};
 
-assertTrue (animal.legs == 2);
-animal.actions = 4; // Not implemented yet :(
+assertTrue (animal.legs == 4);
+animal.legs = 3; 
 animal.actions.greet();
 animal.actions.eat("food");

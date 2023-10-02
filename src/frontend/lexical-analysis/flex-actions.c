@@ -196,28 +196,16 @@ token AfterAllPatternAction() {
 	return AFTER_ALL;
 }
 
-token AssertTruePatternAction() {
-	LogDebug("[Flex] AssertTruePatternAction.");
-	yylval.token = ASSERT_TRUE;
-	return ASSERT_TRUE;
+token AssertPatternAction(assertion_t assertion) {
+	LogDebug("[Flex] AssertPatternAction.");
+	yylval.assertionType = assertion;
+	return ASSERT;
 }
 
-token AssertFalsePatternAction() {
-	LogDebug("[Flex] AssertFalsePatternAction.");
-	yylval.token = ASSERT_FALSE;
-	return ASSERT_FALSE;
-}
-
-token AssertEqualsPatternAction() {
-	LogDebug("[Flex] AssertEqualsPatternAction.");
-	yylval.token = ASSERT_EQUALS;
-	return ASSERT_EQUALS;
-}	
-
-token AssertNotEqualsPatternAction() {
-	LogDebug("[Flex] AssertNotEqualsPatternAction.");
-	yylval.token = ASSERT_NOT_EQUALS;
-	return ASSERT_NOT_EQUALS;
+token AssertComparePatternAction(cmp_assertion_t assertion) {
+	LogDebug("[Flex] AssertComparePatternAction.");
+	yylval.cmpAssertionType = assertion;
+	return ASSERT_COMPARE;
 }
 
 token RetryPatternAction() {

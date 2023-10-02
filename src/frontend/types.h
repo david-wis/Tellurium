@@ -28,4 +28,14 @@ typedef enum {
     TRUE
 } bool_t;
 
+typedef enum {
+   TRUTHY,
+   FALSY 
+} assertion_t;
+
+typedef enum {
+    EQUAL,
+    NOT_EQUAL,
+} cmp_assertion_t;
+
 #endif
