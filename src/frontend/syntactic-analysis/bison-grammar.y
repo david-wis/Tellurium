@@ -171,7 +171,7 @@ moduleList: %empty 												{ }
 module: MODULE scope 											{ } // module -> Module scope
 	| MODULE NAME scope 										{ } // module -> Module NAME scope
 	| BEFORE_ALL scope 											{ } // module -> BeforeAll scope
-	| AFTER_ALL NAME scope 										{ } // module -> AfterAll scope
+	| AFTER_ALL scope 										{ } // module -> AfterAll scope
 	;
 
 

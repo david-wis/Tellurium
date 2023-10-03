@@ -316,7 +316,7 @@ token NumberPatternAction(const char * lexeme, const int length) {
 	char * lexemeCopy = copyLexeme(lexeme, length);
 	yylval.number = lexemeCopy;
 	free(lexemeCopy);
-	return INTEGER;
+	return NUMBER;
 }
 
 
