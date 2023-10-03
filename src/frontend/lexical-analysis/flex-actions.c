@@ -60,21 +60,9 @@ token StringPatternAction(const char * lexeme, const int length) {
 }
 
 token BeginSequencePatternAction() {
-	LogDebug("[Flex] [SEQUENCE] BeginSequencePatternAction..........................");
+	LogDebug("[Flex] BeginSequencePatternAction..........................");
 	yylval.token = BEGIN_SEQUENCE;
 	return BEGIN_SEQUENCE;
-}
-
-token KeyDownPatternAction() {
-	LogDebug("[Flex] KeyDownPatternAction: 'down'.");
-	yylval.token = KEY_DOWN;
-	return KEY_DOWN;
-}
-
-token KeyUpPatternAction() {
-	LogDebug("[Flex] KeyUpPatternAction: 'up'.");
-	yylval.token = KEY_UP;
-	return KEY_UP;
 }
 
 token KeyPatternAction(const char * lexeme, actionkey_t key) {
@@ -84,7 +72,7 @@ token KeyPatternAction(const char * lexeme, actionkey_t key) {
 }
 
 token EndSequencePatternAction() {
-	LogDebug("[Flex] [SEQUENCE] EndSequencePatternAction............................");
+	LogDebug("[Flex] EndSequencePatternAction............................");
 	yylval.token = END_SEQUENCE;
 	return END_SEQUENCE;
 }
@@ -94,6 +82,24 @@ token BinaryOperatorPatternAction(const char * lexeme, const int length) {
 	char * lexemeCopy = copyLexeme(lexeme, length);
 	yylval.operator = lexemeCopy;
 	return BINARY_OPERATOR;
+}
+
+token PipePatternAction() {
+	LogDebug("[Flex] PipePatternAction: '|'.");
+	yylval.token = PIPE;
+	return PIPE;
+}
+
+token PlusPatternAction() {
+	LogDebug("[Flex] PlusPatternAction: '+'.");
+	yylval.token = PLUS;
+	return PLUS;
+}
+
+token MinusPatternAction() {
+	LogDebug("[Flex] PlusPatternAction: '-'.");
+	yylval.token = MINUS;
+	return MINUS;
 }
 
 token UnaryOperatorPatternAction(const char * lexeme, const int length) {

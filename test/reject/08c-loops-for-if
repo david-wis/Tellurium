@@ -1,0 +1,5 @@
+var i;
+for(if(i == 2) {return 0;}; i<10; i+=1){
+    c += i;
+}
+

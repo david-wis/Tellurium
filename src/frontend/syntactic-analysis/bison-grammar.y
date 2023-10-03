@@ -46,6 +46,9 @@
 	int action;
 	int parameters;	
 	int literal;
+	int binaryOperator;
+	int exceptionSet;
+
 
 	// Terminales.
 	token token;
@@ -68,11 +71,12 @@
 
 %token <token> BEGIN_SEQUENCE
 %token <token> END_SEQUENCE
-%token <token> KEY_DOWN
-%token <token> KEY_UP
 %token <token> KEY
 
 %token <token> BINARY_OPERATOR
+%token <token> PIPE
+%token <token> PLUS
+%token <token> MINUS
 %token <token> UNARY_OPERATOR
 %token <token> ASSIGNMENT_OPERATOR
 %token <token> OPEN_PARENTHESIS
@@ -144,6 +148,8 @@
 %type <action> action
 %type <parameters> parameters
 %type <literal> literal
+%type <binaryOperator> binaryOperator
+%type <exceptionSet> exceptionSet
 
 // El símbolo inicial de la gramatica.
 %start program
@@ -158,7 +164,7 @@ suite:  SUITE OPEN_BRACE moduleList CLOSE_BRACE	   				{ } // suite -> Suite { m
 	|	SUITE NAME OPEN_BRACE moduleList CLOSE_BRACE			{ } // suite -> Suite NAME { moduleList }
 	;
 
-moduleList: %empty 												{ } // moduleList -> 
+moduleList: %empty 												{ } 
 	| moduleList module											{ } // moduleList -> moduleList module
 	;
 
@@ -172,7 +178,7 @@ module: MODULE scope 											{ } // module -> Module scope
 scope: OPEN_BRACE statementList CLOSE_BRACE  					{ } // scope -> { statementList }
 	;
 
-statementList: %empty 											{ } // statementList -> 
+statementList: %empty 											{ } 
 	| statementList statement									{ } // statementList -> statementList statement
 	; 
 
@@ -221,17 +227,26 @@ try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope						{ 
 	;
 
 retry: %empty																			{ } 
-	| RETRY OPEN_PARENTHESIS NAME COMMA INTEGER CLOSE_PARENTHESIS scope					{ } // retry -> "retry" ( NAME , INTEGER ) scope
-	| RETRY OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope								{ } // retry -> "retry" ( NAME ) scope
+	| RETRY OPEN_PARENTHESIS exceptionSet COMMA INTEGER CLOSE_PARENTHESIS scope					{ } // retry -> "retry" ( NAME , INTEGER ) scope
+	| RETRY OPEN_PARENTHESIS exceptionSet CLOSE_PARENTHESIS scope								{ } // retry -> "retry" ( NAME ) scope
+	;
+
+exceptionSet: NAME																	{ } // exceptionSet -> NAME 
+	| exceptionSet PIPE NAME														{ } // exceptionSet -> exceptionSet exception
 	;
 	
-expression: operation																{ } // expression -> expression BINARY_OPERATOR expression
-	| lambda																		{ }
+expression: operation																{ } // expression -> operation 
+	| lambda																		{ } // expression -> lambda
 	;
 
 operation: operand 																	{ } // operation -> operand
 	| UNARY_OPERATOR operand														{ } // operation -> UNARY_OPERATOR operand
-	| operation BINARY_OPERATOR operand												{ } // operation -> operation BINARY_OPERATOR operand
+	| operation binaryOperator operand												{ } // operation -> operation BINARY_OPERATOR operand
+	;
+
+binaryOperator: PLUS																{ } // binaryOperator -> +
+	| MINUS																			{ } // binaryOperator -> -
+	| BINARY_OPERATOR																{ } 
 	;
 
 operand: literal 											         				{ } // operand -> literal
@@ -262,8 +277,8 @@ variable: NAME 																		{ } // variable -> NAME
 	| object DOT NAME																{ } // variable -> object . NAME
 	;
 
-lambda: OPEN_PARENTHESIS parameterDefinitions ARROW scope						{ } // lambda -> ( parameterDefinitions ) -> scope
-	| OPEN_PARENTHESIS ARROW scope											{ } // lambda -> () -> scope
+lambda: OPEN_PARENTHESIS parameterDefinitions ARROW scope										{ } // lambda -> ( parameterDefinitions ) -> scope
+	| OPEN_PARENTHESIS ARROW scope																{ } // lambda -> () -> scope
 	| FUNCTION OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 					{ }  // lambda -> "function" NAME ( parameterDefinitions ) scope
 	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 										{ }  // lambda -> "function" NAME ( ) scope
 	;
@@ -272,12 +287,12 @@ sequence: BEGIN_SEQUENCE actionList END_SEQUENCE									{ } // sequence -> acti
 	;
 
 actionList: actionList action														{ } // actionList -> actionList action
-	| %empty																		{ } // actionList -> %empty
+	| %empty																		{ } 
 	;
 
 action: KEY 																		{ } // action -> KEY
-	| KEY_DOWN KEY	 																{ } // action -> + KEY
-	| KEY_UP KEY																	{ } // action -> - KEY
+	| PLUS KEY	 																	{ } // action -> + KEY
+	| MINUS KEY																		{ } // action -> - KEY
 	| STRING	 																	{ } // action -> STRING
 	;
 

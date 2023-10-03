@@ -1,0 +1,11 @@
+Suite Sweet {
+    BeforeAll {
+        start("firefox");
+        navigate("https://arcor.com/es/nuestras-marcas");
+    }
+
+    Module Mogul {
+        $("//h2[text()='MOGUL']").click(); // If the xpath is invalid, it is JavaScript's problem 
+        assertTrue $("//div[@class='text']/p").text().contains("celíacos");
+    }
+}

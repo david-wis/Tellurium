@@ -1,0 +1,2 @@
+var hello;
+hello.0world = "Hello";

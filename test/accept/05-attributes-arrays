@@ -1,0 +1,5 @@
+var foo = [1, 2, 3];
+(foo.reverse()[2].toExponential() + "2").replace("1", "5");
+
+var bar = [["hello", 2, 3], [4, 5, "world"]];
+console.log(bar[1][2].toUpperCase());

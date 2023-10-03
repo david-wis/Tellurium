@@ -1,0 +1,17 @@
+function sum(a, b) {
+    return a + b;
+}
+
+var addOne = (a) => {
+    return sum(a, 1);
+};
+
+console.log(addOne(5));
+addOne;
+addOne(3);
+sum;
+sum(3, 4);
+
+var nothing = () => {};
+nothing;
+nothing();

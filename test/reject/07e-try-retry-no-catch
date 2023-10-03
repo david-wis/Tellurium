@@ -1,0 +1,7 @@
+try {
+    var a = Array(-1);
+} retry(RangeError) {
+    console.log("Error creating the array - retrying");
+} finally {
+    console.log("Done");
+}

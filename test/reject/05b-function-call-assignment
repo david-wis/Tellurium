@@ -1,0 +1,5 @@
+var a = {
+    action: () => { return 1; }
+};
+
+a.action() = 4;

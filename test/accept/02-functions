@@ -3,3 +3,23 @@ function sum(a, b) {
 }
 
 sum(1, 2);
+
+function a() {
+
+}
+
+function b(a, b, c, d,e,f, g,h) {
+    return a+b;
+    return c+d;
+    return e+f;
+}
+
+function c(){}
+
+function hola() {
+    function nested() {
+        return 1;
+    }
+    var x = (function() { return 1; })();
+    nested();
+}

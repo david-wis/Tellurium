@@ -15,7 +15,6 @@
 
 /* Contextos de Flex. */
 %x COMMENT
-%x SEQUENCE
 /* %x TEMPLATE_STRING */
 
 /* Patrones reutilizables. */
@@ -38,38 +37,35 @@ single_line_comment  "//".*
 
 {single_line_comment}    { IgnoredPatternAction(yytext, yyleng); }  
 
-"<|"                      { BEGIN(SEQUENCE); BeginSequencePatternAction(); }
-<SEQUENCE>"+"             { return KeyDownPatternAction(); }        
-<SEQUENCE>"-"             { return KeyUpPatternAction(); } 
+"<|"            { return BeginSequencePatternAction(); }
 
-<SEQUENCE>"CONTROL"       { return KeyPatternAction(yytext, CONTROL); }
-<SEQUENCE>"SHIFT"         { return KeyPatternAction(yytext, SHIFT); }
-<SEQUENCE>"ALT"           { return KeyPatternAction(yytext, ALT); }
+"CONTROL"       { return KeyPatternAction(yytext, CONTROL); }
+"SHIFT"         { return KeyPatternAction(yytext, SHIFT); }
+"ALT"           { return KeyPatternAction(yytext, ALT); }
 
-<SEQUENCE>"LEFT"          { return KeyPatternAction(yytext, LEFT); }
-<SEQUENCE>"RIGHT"         { return KeyPatternAction(yytext, RIGHT); }
-<SEQUENCE>"UP"            { return KeyPatternAction(yytext, UP); }   
-<SEQUENCE>"DOWN"          { return KeyPatternAction(yytext, DOWN); }
+"LEFT"          { return KeyPatternAction(yytext, LEFT); }
+"RIGHT"         { return KeyPatternAction(yytext, RIGHT); }
+"UP"            { return KeyPatternAction(yytext, UP); }   
+"DOWN"          { return KeyPatternAction(yytext, DOWN); }
 
-<SEQUENCE>"ENTER"         { return KeyPatternAction(yytext, ENTER); }
-<SEQUENCE>"SPACE"         { return KeyPatternAction(yytext, SPACE); }  
-<SEQUENCE>"BACKSPACE"     { return KeyPatternAction(yytext, BACKSPACE); }
-<SEQUENCE>"DELETE"        { return KeyPatternAction(yytext, DELETE); } 
-<SEQUENCE>"TAB"           { return KeyPatternAction(yytext, TAB); }
-<SEQUENCE>"ESCAPE"        { return KeyPatternAction(yytext, ESCAPE); }
-<SEQUENCE>"PAGEUP"        { return KeyPatternAction(yytext, PAGE_UP); }
-<SEQUENCE>"PAGEDOWN"      { return KeyPatternAction(yytext, PAGE_DOWN); }
-<SEQUENCE>"END"           { return KeyPatternAction(yytext, END); }
-<SEQUENCE>"HOME"          { return KeyPatternAction(yytext, HOME); }
+"ENTER"         { return KeyPatternAction(yytext, ENTER); }
+"SPACE"         { return KeyPatternAction(yytext, SPACE); }  
+"BACKSPACE"     { return KeyPatternAction(yytext, BACKSPACE); }
+"DELETE"        { return KeyPatternAction(yytext, DELETE); } 
+"TAB"           { return KeyPatternAction(yytext, TAB); }
+"ESCAPE"        { return KeyPatternAction(yytext, ESCAPE); }
+"PAGEUP"        { return KeyPatternAction(yytext, PAGE_UP); }
+"PAGEDOWN"      { return KeyPatternAction(yytext, PAGE_DOWN); }
+"END"           { return KeyPatternAction(yytext, END); }
+"HOME"          { return KeyPatternAction(yytext, HOME); }
 
-<SEQUENCE>{string}        { return StringPatternAction(yytext, yyleng); }
+"|>"            { return EndSequencePatternAction(); }
 
-<SEQUENCE>"|>"            { EndSequencePatternAction(); BEGIN(INITIAL); }
 
-")"{whitespace}*"=>"              { return ArrowPatternAction(); }
+")"{whitespace}*"=>"                    { return ArrowPatternAction(); }
 
-"+"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
-"-"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"+"											  { return PlusPatternAction(); }
+"-"											  { return MinusPatternAction(); }
 "*"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
 "/"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
 "%"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
@@ -83,6 +79,7 @@ single_line_comment  "//".*
 "==="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
 "!="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
 "!=="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"|"											{ return PipePatternAction(); }
 
 "!"											  { return UnaryOperatorPatternAction(yytext, yyleng); }
 

@@ -1,0 +1,61 @@
+var a = 3;
+var b = 4;
+var c = 0;
+
+if (a ==3 ) {
+    return a;
+}
+
+
+if (a == 3){
+    return a;
+}
+else{
+    return b; 
+}
+
+if (a==3) {
+    return a;
+} else if(a==3) {
+    
+    return b; 
+
+} else if(a==3) {
+
+    return b; 
+
+
+
+} else if(a==3) {
+    return b; 
+
+} else if(a==3) {
+
+    return b; 
+} else if(a==3) {
+
+
+    return b; 
+} else {
+    return b; 
+}
+
+if(a==3) {
+    if(a==3) {
+        if(a==3) {
+            if(a==3) {
+
+            }
+            if(a==3) {}
+
+            if    (a==3)   {
+
+            }
+            else
+            {
+                
+            }
+        }
+    }
+}
+

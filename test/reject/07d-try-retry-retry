@@ -1,0 +1,3 @@
+retry(RangeError) {
+    console.log("Error creating the array - retrying");
+}

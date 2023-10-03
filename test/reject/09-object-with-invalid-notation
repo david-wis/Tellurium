@@ -1,0 +1,6 @@
+var animal = {
+    legs: 4;
+    heads: 5;
+    eyes: 3;
+    name: "Bob";
+};

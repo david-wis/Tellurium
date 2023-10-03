@@ -1,0 +1,67 @@
+try {
+    var a = Array(-1);
+} retry(RangeError) {
+    console.log("Error creating the array - retrying");
+} catch(e) {
+    console.log("Error creating the array - giving up");
+} finally {
+    console.log("Done");
+}
+
+try {
+    var a = Array(-1);
+} retry(RangeError, 2) {
+    console.log("Error creating the array - retrying");
+} catch(e) {
+    console.log("Error creating the array - giving up");
+} finally {
+    console.log("Done");
+}
+
+try {
+
+
+
+    var a = Array(-1);
+} retry(RangeError | TypeError) {
+
+
+
+    console.log("Error creating the array - retrying");
+
+
+} catch(e) {
+
+
+    console.log("Error creating the array - giving up");
+}
+
+try {
+    var a = Array(-1);
+} retry(RangeError, 2) {
+
+
+
+    console.log("Error creating the array - retrying");
+} 
+
+
+catch(e) {
+    console.log("Error creating the array - giving up");
+}
+
+try {
+    var a = Array(-1);
+} catch(e) {
+    console.log("Error creating the array - giving up");
+}  finally {
+    console.log("Done");
+}
+
+try {
+    var a = Array(-1);
+} catch( e      ) {
+    console.log("Error creating the array - giving up");
+}
+
+

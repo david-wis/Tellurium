@@ -1,0 +1,20 @@
+<|     |>;
+<||>;
+<|
+
+|>;
+
+<| "hola"
+"hola"
+LEFT
++SHIFT
+-SHIFT
+|>;
+
+(<||>);
+
+var actionsToRun = <| "mogul" +CONTROL LEFT +SHIFT RIGHT "cvv" -SHIFT -CONTROL |>;
+<| LEFT LEFT LEFT LEFT LEFT LEFT|>;
+<| "" ""  " " |>;
+ 
+$("").sendKeys(<| +SHIFT |> + "hola" + <| -SHIFT |>);

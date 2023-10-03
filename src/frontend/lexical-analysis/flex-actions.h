@@ -40,6 +40,12 @@ token EndSequencePatternAction();
 
 token BinaryOperatorPatternAction(const char * lexeme, const int length);
 
+token PipePatternAction();
+
+token PlusPatternAction();
+
+token MinusPatternAction();
+
 token UnaryOperatorPatternAction(const char * lexeme, const int length);
 
 token AssignmentOperatorPatternAction(const char * lexeme, const int length);
