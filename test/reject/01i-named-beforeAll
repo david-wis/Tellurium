@@ -1,0 +1,12 @@
+Suite s1(){
+    Module m{
+
+    }
+    Module {
+
+    }
+    BeforeAll b{
+        
+    }
+}    
+    
