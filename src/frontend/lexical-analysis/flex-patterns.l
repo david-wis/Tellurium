@@ -66,6 +66,8 @@ single_line_comment  "//".*
 
 <SEQUENCE>"|>"            { EndSequencePatternAction(); BEGIN(INITIAL); }
 
+")"{whitespace}*"=>"              { return ArrowPatternAction(); }
+
 "+"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
 "-"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
 "*"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
@@ -125,7 +127,6 @@ single_line_comment  "//".*
 "while"                   { return WhilePatternAction(); }
 "for"                     { return ForPatternAction(); }
 
-"=>"                      { return ArrowPatternAction(); }
 "var"                     { return VarPatternAction(); }
 "function"                { return FunctionPatternAction(); }
 "return"                  { return ReturnPatternAction(); }

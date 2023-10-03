@@ -7,13 +7,17 @@ var animal = {
         greet: function() {
             return "Hello, my name is " + this.name;
         },
-        eat: (food) => {
+        eat: (food)=>{
             return "I am eating " + food;
+        },
+        walk: (distance   )             =>
+        {
+            return "I am walking " + distance ;
         }
     } 
 };
 
-assertTrue (animal.legs == 4);
+assertTrue animal.legs == ((1+1)*2);
 animal.legs = 3; 
 animal.actions.greet();
 animal.actions.eat("food");

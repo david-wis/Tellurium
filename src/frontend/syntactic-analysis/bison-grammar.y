@@ -247,24 +247,23 @@ attributeList: %empty																{ }
 attribute: NAME COLON expression													{ } // attribute -> NAME : expression
 	;																				
 
-object: OPEN_PARENTHESIS expression CLOSE_PARENTHESIS								{ } // object -> ( expression )
-	| variable																		{ } // object -> variable
+object: variable																	{ } // object -> variable*
 	| XPATH_OPERATOR STRING CLOSE_PARENTHESIS										{ } // object -> $("string")
 	| OPEN_PARENTHESIS variable ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS	{ } // object -> ( variable = expression )
 	| OPEN_BRACKET CLOSE_BRACKET													{ } // object -> [ ] (empty array)
 	| OPEN_BRACKET parameters CLOSE_BRACKET											{ } // object -> [ parameters ] (array with paraneters)		 */
 	| object OPEN_PARENTHESIS CLOSE_PARENTHESIS										{ } // object -> NAME ()	
 	| object OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS							{ } // object -> NAME ( parameters )	
+	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // expression -> ( expression )
 	;
-
 
 variable: NAME 																		{ } // variable -> NAME
 	| object OPEN_BRACKET expression CLOSE_BRACKET									{ } // variable -> NAME [ expression ]
 	| object DOT NAME																{ } // variable -> object . NAME
 	;
 
-lambda: OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS ARROW scope						{ } // lambda -> ( parameterDefinitions ) -> scope
-	| OPEN_PARENTHESIS CLOSE_PARENTHESIS ARROW scope											{ } // lambda -> () -> scope
+lambda: OPEN_PARENTHESIS parameterDefinitions ARROW scope						{ } // lambda -> ( parameterDefinitions ) -> scope
+	| OPEN_PARENTHESIS ARROW scope											{ } // lambda -> () -> scope
 	| FUNCTION OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 					{ }  // lambda -> "function" NAME ( parameterDefinitions ) scope
 	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 										{ }  // lambda -> "function" NAME ( ) scope
 	;
