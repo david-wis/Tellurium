@@ -1,0 +1,14 @@
+Suite s1 {
+    BeforeAll{
+        return a + b;
+    }
+
+    Module m1 {
+
+    }
+}
+
+function foo(){
+    return 0;
+}
+        
