@@ -263,7 +263,7 @@ attribute: NAME COLON expression													{ } // attribute -> NAME : expressi
 	;																				
 
 object: variable																	{ } // object -> variable*
-	| XPATH_OPERATOR STRING CLOSE_PARENTHESIS										{ } // object -> $("string")
+	| XPATH_OPERATOR expression CLOSE_PARENTHESIS										{ } // object -> $("string")
 	| OPEN_PARENTHESIS variable ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS	{ } // object -> ( variable = expression )
 	| OPEN_BRACKET CLOSE_BRACKET													{ } // object -> [ ] (empty array)
 	| OPEN_BRACKET parameters CLOSE_BRACKET											{ } // object -> [ parameters ] (array with paraneters)		 */

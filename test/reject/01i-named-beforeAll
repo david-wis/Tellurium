@@ -1,4 +1,4 @@
-Suite s1(){
+Suite s1{
     Module m{
 
     }

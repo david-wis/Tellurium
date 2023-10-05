@@ -5,7 +5,22 @@ Suite Sweet {
     }
 
     Module Mogul {
-        $("//h2[text()='MOGUL']").click(); // If the xpath is invalid, it is JavaScript's problem 
+        $("//h2[text()='MOGUL']").click(); 
+        $("//h2[text()='MOGUL']").click(); 
         assertTrue $("//div[@class='text']/p").text().contains("celíacos");
+        $("]]]]").click(); // If the xpath is invalid, it is JavaScript's problem 
+
+        // wrong type is not validated in syntax, but in semantics
+        $("//*").click(); 
+        $(1).click();
+        $({}).click();
+        $(() => {return "//*";}).click();
+    }
+
+    AfterAll {
+        var a = "//*";
+        $(a).click();
+        $((a)).click();
+        $((a).toUpper());
     }
 }

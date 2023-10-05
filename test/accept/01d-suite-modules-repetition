@@ -1,0 +1,23 @@
+// repetition is validated at semantics
+Suite s{
+    Module m1 {
+        
+    }
+
+
+    AfterAll {
+
+    }
+
+    Module m1 {
+        
+    }
+
+    AfterAll {
+        
+    }
+
+    BeforeAll {
+
+    }
+}
