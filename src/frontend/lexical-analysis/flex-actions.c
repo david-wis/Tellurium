@@ -102,6 +102,12 @@ token MinusPatternAction() {
 	return MINUS;
 }
 
+token MultiplicationPatternAction() {
+	LogDebug("[Flex] MultiplicationPatternAction: '*'.");
+	yylval.token = MULTIPLICATION;
+	return MULTIPLICATION;
+}
+
 token UnaryOperatorPatternAction(const char * lexeme, const int length) {
 	LogDebug("[Flex] UnaryOperatorPatternAction: '%s' (length = %d).", lexeme, length);
 	char * lexemeCopy = copyLexeme(lexeme, length);
@@ -176,9 +182,9 @@ token DotPatternAction() {
 	return DOT;
 }
 
-token XPathOperatorPatternAction() {
+token XPathOperatorPatternAction(cardinality_t cardinality) {
 	LogDebug("[Flex] XPathOperatorPatternAction: '/'.");
-	yylval.token = XPATH_OPERATOR;
+	yylval.cardinality = cardinality; 
 	return XPATH_OPERATOR;
 }
 
@@ -272,10 +278,10 @@ token ArrowPatternAction() {
 	return ARROW;
 }
 
-token VarPatternAction() {
+token VarPatternAction(variable_scope_t variableScope) {
 	LogDebug("[Flex] VarPatternAction.");
-	yylval.token = VAR;
-	return VAR;
+	yylval.variableScope = variableScope;
+	return VARIABLE;
 }
 
 token FunctionPatternAction() {
@@ -295,6 +301,24 @@ token BooleanPatternAction(const char * lexeme, bool_t boolean) {
 	yylval.boolean = boolean; 
 	return BOOLEAN;
 } 
+
+token NullPatternAction() {
+	LogDebug("[Flex] NullPatternAction.");
+	yylval.token = NULL_LITERAL;
+	return NULL_LITERAL;
+}
+
+token UndefinedPatternAction() {
+	LogDebug("[Flex] UndefinedPatternAction.");
+	yylval.token = UNDEFINED;
+	return UNDEFINED;
+}
+
+token NaNPatternAction() {
+	LogDebug("[Flex] NaNPatternAction.");
+	yylval.token = NAN;
+	return NAN;
+}
 
 token NamePatternAction(const char * lexeme, const int length) {
 	LogDebug("[Flex] NamePatternAction: '%s' (length = %d).", lexeme, length);

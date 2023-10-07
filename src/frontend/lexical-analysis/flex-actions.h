@@ -46,6 +46,8 @@ token PlusPatternAction();
 
 token MinusPatternAction();
 
+token MultiplicationPatternAction();
+
 token UnaryOperatorPatternAction(const char * lexeme, const int length);
 
 token AssignmentOperatorPatternAction(const char * lexeme, const int length);
@@ -70,7 +72,7 @@ token ColonPatternAction();
 
 token DotPatternAction();
 
-token XPathOperatorPatternAction();
+token XPathOperatorPatternAction(cardinality_t cardinality);
 
 // Patrones terminales del lenguaje diseñado.
 token ModulePatternAction();
@@ -103,13 +105,19 @@ token WhilePatternAction();
 
 token ArrowPatternAction();
 
-token VarPatternAction();
+token VarPatternAction(variable_scope_t variableScope);
 
 token FunctionPatternAction();
 
 token ReturnPatternAction();
 
 token BooleanPatternAction(const char * lexeme, bool_t boolean);
+
+token NullPatternAction();
+
+token UndefinedPatternAction();
+
+token NaNPatternAction();
 
 token NamePatternAction(const char * lexeme, const int length);
 

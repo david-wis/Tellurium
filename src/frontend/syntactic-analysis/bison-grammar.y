@@ -38,6 +38,10 @@
 	int expression;
 	int lambda;
 	int object;
+	int operation;
+	int unaryOperator;
+	int binaryOperator;
+	int operand;
 	int attributeList;
 	int attribute;
 	int variable;
@@ -46,7 +50,6 @@
 	int action;
 	int parameters;	
 	int literal;
-	int binaryOperator;
 	int exceptionSet;
 
 
@@ -61,6 +64,8 @@
 	actionkey_t key;
 	assertion_t assertionType;
 	cmp_assertion_t cmpAssertionType;
+	cardinality_t cardinality;
+	variable_scope_t variableScope;
 }
 
 
@@ -77,6 +82,7 @@
 %token <token> PIPE
 %token <token> PLUS
 %token <token> MINUS
+%token <token> MULTIPLICATION
 %token <token> UNARY_OPERATOR
 %token <token> ASSIGNMENT_OPERATOR
 %token <token> OPEN_PARENTHESIS
@@ -110,7 +116,7 @@
 %token <token> WHILE
 
 %token <token> ARROW
-%token <token> VAR
+%token <token> VARIABLE
 %token <token> FUNCTION
 %token <token> RETURN
 
@@ -118,6 +124,9 @@
 %token <number> NUMBER
 %token <string> STRING
 %token <boolean> BOOLEAN
+%token <token> NULL_LITERAL
+%token <token> UNDEFINED
+%token <token> NAN
 
 %token <name> NAME
 
@@ -138,6 +147,10 @@
 %type <tryException> try
 %type <retryException> retry
 %type <expression> expression
+%type <operation> operation
+%type <binaryOperator> binaryOperator
+%type <unaryOperator> unaryOperator
+%type <operand> operand
 %type <lambda> lambda
 %type <object> object
 %type <attributeList> attributeList
@@ -148,8 +161,13 @@
 %type <action> action
 %type <parameters> parameters
 %type <literal> literal
-%type <binaryOperator> binaryOperator
 %type <exceptionSet> exceptionSet
+
+// De menor a mayor precedencia. 
+%right ASSIGNMENT_OPERATOR
+%left PLUS MINUS
+%left MULTIPLICATION
+%left BINARY_OPERATOR 
 
 // El símbolo inicial de la gramatica.
 %start program
@@ -171,7 +189,7 @@ moduleList: %empty 												{ }
 module: MODULE scope 											{ } // module -> Module scope
 	| MODULE NAME scope 										{ } // module -> Module NAME scope
 	| BEFORE_ALL scope 											{ } // module -> BeforeAll scope
-	| AFTER_ALL scope 										{ } // module -> AfterAll scope
+	| AFTER_ALL scope 											{ } // module -> AfterAll scope
 	;
 
 
@@ -183,8 +201,8 @@ statementList: %empty 											{ }
 	; 
 
 statement: expression SEMICOLON									{ } // statement -> expression ;
-	| VAR NAME ASSIGNMENT_OPERATOR expression SEMICOLON			{ } // statement -> var NAME = expression ;
-	| VAR NAME SEMICOLON										{ } // statement -> var NAME ;
+	| VARIABLE NAME ASSIGNMENT_OPERATOR expression SEMICOLON	{ } // statement -> var NAME = expression ;
+	| VARIABLE NAME SEMICOLON									{ } // statement -> var NAME ;
 	| variable ASSIGNMENT_OPERATOR expression SEMICOLON			{ } // statement -> NAME = expression ;
 	| function 													{ } // statement -> function
 	| RETURN expression SEMICOLON								{ } // statement -> return expression ;
@@ -219,14 +237,14 @@ else: ELSE if 															{ } // else -> "else" if
 forExpression: %empty 													{ }
 	| expression														{ } // forExpression -> expression
 	| variable ASSIGNMENT_OPERATOR expression							{ } // forExpression -> variable = expression
-	| VAR variable ASSIGNMENT_OPERATOR expression						{ } // forExpression -> var variable = expression
+	| VARIABLE variable ASSIGNMENT_OPERATOR expression						{ } // forExpression -> var variable = expression
 	;
 
 try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope						{ } // try -> "try" scope retry "catch" ( NAME ) scope
 	| TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope FINALLY scope			{ } // try -> "try" scope retry "catch" ( NAME ) scope "finally" scope
 	;
 
-retry: %empty																			{ } 
+retry: %empty																					{ } 
 	| RETRY OPEN_PARENTHESIS exceptionSet COMMA INTEGER CLOSE_PARENTHESIS scope					{ } // retry -> "retry" ( NAME , INTEGER ) scope
 	| RETRY OPEN_PARENTHESIS exceptionSet CLOSE_PARENTHESIS scope								{ } // retry -> "retry" ( NAME ) scope
 	;
@@ -240,13 +258,18 @@ expression: operation																{ } // expression -> operation
 	;
 
 operation: operand 																	{ } // operation -> operand
-	| UNARY_OPERATOR operand														{ } // operation -> UNARY_OPERATOR operand
+	| unaryOperator operand															{ } // operation -> UNARY_OPERATOR operand
 	| operation binaryOperator operand												{ } // operation -> operation BINARY_OPERATOR operand
+	;
+
+unaryOperator: MINUS																{ } // unaryOperator -> -
+	| UNARY_OPERATOR																{ } // unaryOperator -> UNARY_OPERATOR
 	;
 
 binaryOperator: PLUS																{ } // binaryOperator -> +
 	| MINUS																			{ } // binaryOperator -> -
-	| BINARY_OPERATOR																{ } 
+	| MULTIPLICATION																{ } // binaryOperator -> *
+	| BINARY_OPERATOR																{ } // binaryOperator -> BINARY_OPERATOR
 	;
 
 operand: literal 											         				{ } // operand -> literal
@@ -262,14 +285,14 @@ attributeList: %empty																{ }
 attribute: NAME COLON expression													{ } // attribute -> NAME : expression
 	;																				
 
-object: variable																	{ } // object -> variable*
-	| XPATH_OPERATOR expression CLOSE_PARENTHESIS										{ } // object -> $("string")
+object: variable																	{ } // object -> $(expression) o #(expression)
+	| XPATH_OPERATOR expression CLOSE_PARENTHESIS									{ } // object -> (variable = expression)
 	| OPEN_PARENTHESIS variable ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS	{ } // object -> ( variable = expression )
 	| OPEN_BRACKET CLOSE_BRACKET													{ } // object -> [ ] (empty array)
 	| OPEN_BRACKET parameters CLOSE_BRACKET											{ } // object -> [ parameters ] (array with paraneters)		 */
 	| object OPEN_PARENTHESIS CLOSE_PARENTHESIS										{ } // object -> NAME ()	
 	| object OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS							{ } // object -> NAME ( parameters )	
-	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // expression -> ( expression )
+	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // object -> ( expression )
 	;
 
 variable: NAME 																		{ } // variable -> NAME
@@ -304,6 +327,9 @@ literal: INTEGER 																	{ } // literal -> INTEGER
 	| NUMBER 																		{ } // literal -> NUMBER
 	| STRING 																		{ } // literal -> STRING
 	| BOOLEAN							            								{ } // literal -> BOOLEAN
+	| NULL_LITERAL																	{ } // literal -> NULL_LITERAL
+	| UNDEFINED																		{ } // literal -> UNDEFINED
+	| NAN																			{ } // literal -> NAN
 	| sequence 																		{ } // literal -> NAME
 	;
 %%

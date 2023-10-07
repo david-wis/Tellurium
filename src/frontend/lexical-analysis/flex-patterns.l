@@ -15,7 +15,6 @@
 
 /* Contextos de Flex. */
 %x COMMENT
-/* %x TEMPLATE_STRING */
 
 /* Patrones reutilizables. */
 string          \"([^\\\"]|\\.)*\"  
@@ -24,16 +23,15 @@ endline			    [(\r)?\n]
 whitespace		  [ \f\n\r\t\v]
 char            [a-zA-Z]
 name            {char}({char}|{digit})*
-number           [-]?({digit}*[.])?{digit}+
+number           ({digit}*[.])?{digit}+
 single_line_comment  "//".*
-/* url             [-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) */
 
 %%
 
-"/*"										  { BEGIN(COMMENT); BeginCommentPatternAction(); }
-<COMMENT>.								{ IgnoredPatternAction(yytext, yyleng); }
+"/*"							{ BEGIN(COMMENT); BeginCommentPatternAction(); }
+<COMMENT>.						{ IgnoredPatternAction(yytext, yyleng); }
 <COMMENT>{endline}+				{ IgnoredPatternAction(yytext, yyleng); }
-<COMMENT>"*/"							{ EndCommentPatternAction(); BEGIN(INITIAL); }
+<COMMENT>"*/"					{ EndCommentPatternAction(); BEGIN(INITIAL); }
 
 {single_line_comment}    { IgnoredPatternAction(yytext, yyleng); }  
 
@@ -64,25 +62,6 @@ single_line_comment  "//".*
 
 ")"{whitespace}*"=>"                    { return ArrowPatternAction(); }
 
-"+"											  { return PlusPatternAction(); }
-"-"											  { return MinusPatternAction(); }
-"*"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
-"/"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
-"%"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
-"<"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
-">"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
-"<="											{ return BinaryOperatorPatternAction(yytext, yyleng); }
-">="											{ return BinaryOperatorPatternAction(yytext, yyleng); }
-"&&"											{ return BinaryOperatorPatternAction(yytext, yyleng); }
-"||"											{ return BinaryOperatorPatternAction(yytext, yyleng); }
-"=="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
-"==="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
-"!="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
-"!=="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
-"|"											{ return PipePatternAction(); }
-
-"!"											  { return UnaryOperatorPatternAction(yytext, yyleng); }
-
 "="											      { return AssignmentOperatorPatternAction(yytext, yyleng); }
 "+="											  { return AssignmentOperatorPatternAction(yytext, yyleng); }
 "-="											  { return AssignmentOperatorPatternAction(yytext, yyleng); }
@@ -102,7 +81,27 @@ single_line_comment  "//".*
 ":"											  { return ColonPatternAction(); }
 "."											  { return DotPatternAction(); }
 
-"$("                      { return XPathOperatorPatternAction(); }
+"+"											  { return PlusPatternAction(); }
+"-"											  { return MinusPatternAction(); }
+"*"											  { return MultiplicationPatternAction(); }
+"/"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"%"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"<="											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+">="											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+"<"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+">"											  { return BinaryOperatorPatternAction(yytext, yyleng); }
+"&&"											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+"||"											{ return BinaryOperatorPatternAction(yytext, yyleng); }
+"==="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"=="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"!=="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"!="									    { return BinaryOperatorPatternAction(yytext, yyleng); }
+"!"											  { return UnaryOperatorPatternAction(yytext, yyleng); }
+"|"											{ return PipePatternAction(); }
+
+
+"$("                      { return XPathOperatorPatternAction(ONE); }
+"#("                      { return XPathOperatorPatternAction(MANY); }
 
 "Module"                  { return ModulePatternAction(); }
 "Suite"                   { return SuitePatternAction(); }
@@ -124,12 +123,18 @@ single_line_comment  "//".*
 "while"                   { return WhilePatternAction(); }
 "for"                     { return ForPatternAction(); }
 
-"var"                     { return VarPatternAction(); }
+"var"                     { return VarPatternAction(VAR); }
+"let"                     { return VarPatternAction(LET); }
+"const"                   { return VarPatternAction(CONST); }
 "function"                { return FunctionPatternAction(); }
 "return"                  { return ReturnPatternAction(); }
 
 "true"                    { return BooleanPatternAction(yytext, TRUE); }
 "false"                   { return BooleanPatternAction(yytext, FALSE); }
+
+"null"                   { return NullPatternAction(); }
+"undefined"              { return UndefinedPatternAction(); }
+"nan"                    { return NaNPatternAction(); }
 
 {name}                      { return NamePatternAction(yytext, yyleng); }
 {digit}+				    { return IntegerPatternAction(yytext, yyleng); }

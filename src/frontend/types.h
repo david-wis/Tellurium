@@ -38,4 +38,15 @@ typedef enum {
     NOT_EQUAL,
 } cmp_assertion_t;
 
+typedef enum {
+    ONE,
+    MANY
+} cardinality_t;
+
+typedef enum {
+    LET,
+    CONST,
+    VAR
+} variable_scope_t;
+
 #endif

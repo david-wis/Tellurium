@@ -1,4 +1,5 @@
 // repetition is validated at semantics
+// TODO: when backend is implemented, check that the repetition is not generated and move this test to reject 
 Suite s{
     Module m1 {
         

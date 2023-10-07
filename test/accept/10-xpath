@@ -11,15 +11,20 @@ Suite Sweet {
         $("]]]]").click(); // If the xpath is invalid, it is JavaScript's problem 
 
         // wrong type is not validated in syntax, but in semantics
+        // TODO: Move this part of the test to a new reject test
         $("//*").click(); 
         $(1).click();
         $({}).click();
         $(() => {return "//*";}).click();
+
+        #("//*").forEach((elem) => {elem.click();});
+        #("//h2*")[0].click();
     }
 
     AfterAll {
         var a = "//*";
         $(a).click();
+        #(a).click();
         $((a)).click();
         $((a).toUpper());
     }

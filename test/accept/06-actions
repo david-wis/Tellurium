@@ -17,4 +17,7 @@ var actionsToRun = <| "mogul" +CONTROL LEFT +SHIFT RIGHT "cvv" -SHIFT -CONTROL |
 <| LEFT LEFT LEFT LEFT LEFT LEFT|>;
 <| "" ""  " " |>;
  
-$("").sendKeys(<| +SHIFT |> + "hola" + <| -SHIFT |>);
+$("").sendKeys(<| +SHIFT |> + <|"hola"|> * (5- 2) + <| -SHIFT |> );
+$("").sendKeys(<| +SHIFT |> + <|"hola"|> * (5 - 2) + <| -SHIFT |> );
+$("").sendKeys(<| +SHIFT |> + <|"hola"|> * (5 -2) + <| -SHIFT |> );
+$("").sendKeys(<| +SHIFT |> + <|"hola"|> * (5-2) + <| -SHIFT |> );

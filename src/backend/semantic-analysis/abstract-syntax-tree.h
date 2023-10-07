@@ -38,7 +38,7 @@ typedef struct {
 typedef enum {
 	ADDITION,
 	SUBTRACTION,
-	MULTIPLICATION,
+	// MULTIPLICATION,
 	DIVISION,
 	FACTOR
 } ExpressionType;
