@@ -1,8 +1,7 @@
-[![✗](https://img.shields.io/badge/Release-v0.3.0-ffb600.svg?style=for-the-badge)](https://github.com/agustin-golmar/Flex-Bison-Compiler/releases)
+# Tellurium 
 
-# Compilador Flex/Bison
-
-Un compilador vacío de ejemplo construido con Flex y Bison.
+Domain Specific Language (DSL) para la creación de Suites y Test Cases de pruebas de software. 
+Su sintaxis está inspirada en JavaScript, y el backend utilizará el framework [Selenium](https://www.selenium.dev/).
 
 ## Requerimientos
 
@@ -35,11 +34,7 @@ Luego se deberá abrir la solución generada `bin\Compiler.sln` con el IDE _Micr
 
 ## Ejecución
 
-Para compilar un programa, primero cree un archivo vacío denominado `program` (o el nombre que desee), con el siguiente contenido:
-
-```
-123123 + 123 - 2 * (454 + 890 / 89)
-```
+Para compilar un programa, primero cree un archivo vacío denominado `program` (o el nombre que desee).
 
 Luego, ejecute el compilador desde el directorio raíz del proyecto, o desde cualquier otro lugar indicando el path hacia el script `start.sh` y pasando por parámetro el path hacia el programa a compilar:
 
@@ -52,8 +47,6 @@ En Windows:
 ```bash
 user@machine:path/ $ script\start.bat program
 ```
-
-Debería obtener el resultado correcto de evaluar el programa anterior: `122318`.
 
 ## Testing
 
@@ -70,3 +63,8 @@ user@machine:path/ $ script\test.bat
 ```
 
 Si desea agregar nuevos casos de uso, deberá crear un archivo por cada uno, que contenga el programa a testear dentro de las carpetas `test/accept` o `test/reject` según corresponda (es decir, si el mismo debe ser aceptado o rechazado por el compilador).
+
+## Autores
+* Jonathan Liu
+* Abril Vilamowski
+* David Wischñevsky 
