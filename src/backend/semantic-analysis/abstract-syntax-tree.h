@@ -1,6 +1,8 @@
 #ifndef ABSTRACT_SYNTAX_TREE_HEADER
 #define ABSTRACT_SYNTAX_TREE_HEADER
 
+#include "../../shared/types.h"
+
 /**
 * Se realiza este tipo de definiciones cuando el tipo de dato debe
 * auto-referenciarse, como es el caso de una "Expression", que está compuesta
@@ -55,34 +57,209 @@ typedef struct ExceptionSetNode ExceptionSetNode;
 typedef struct IfControlNode IfControlNode;
 typedef struct ParameterDefinitionNode ParameterDefinitionNode;
 typedef struct ScopeNode ScopeNode;
+typedef struct OperationNode OperationNode; 
+typedef struct ObjectNode ObjectNode;
+typedef struct ActionListNode ActionListNode;
+typedef struct ParametersNode ParametersNode;
+typedef struct ExpressionNode ExpressionNode;
+typedef struct Assignment Assignment;
+typedef struct SequenceNode SequenceNode;
+typedef struct VariableNode VariableNode;
+typedef struct AttributeListNode AttributeListNode;
+
+
+// TODO: Ver si conviene mover tipos de dato globales a otro archivo 
+typedef enum {
+	L_INTEGER,
+	L_STRING,
+	L_BOOLEAN,
+	L_SEQUENCE,
+	L_NIL,
+	L_UNDEFINED,
+	L_NAN
+} LiteralType;
+
+
+typedef union {
+	int integer;
+	char * string; // Also used for number 
+	bool_t bool;
+	SequenceNode * sequence;
+
+} LiteralUnion; 
 
 typedef struct {
+	LiteralUnion literalUnion;
+	LiteralType type;
+} LiteralNode;
 
-} VariableNode;
+struct ParametersNode {
+	ParametersNode * next;
+	ExpressionNode * expression;
+};
+
+typedef enum {
+	KEY_STATE_DOWN,	
+	KEY_STATE_UP,	
+	KEY_STATE_PRESS
+} ActionKeyState; 
 
 
+typedef struct {
+	char * name;
+	ActionKeyState type;
+} Key;
+
+typedef union {
+	Key * key;
+	char * stream;
+} ActionUnion;
+
+typedef enum {
+	ACTION_KEY,
+	ACTION_STREAM
+} action_type_t;
+
+typedef struct {
+	ActionUnion action;
+	action_type_t type;
+} ActionNode;
+
+struct ActionListNode {
+	ActionListNode * next;
+	ActionNode * action;
+};
+
+struct SequenceNode {
+	ActionListNode * actionList;
+}; 
+
+typedef struct {
+	ParametersNode * parameters; // Nullable
+} Array;
+
+typedef struct {
+	ObjectNode * object;
+	ParametersNode * parameters; // Nullable
+} FunctionCall;
+
+typedef union {
+	VariableNode * variable;
+	ExpressionNode * expression;
+	Assignment * assignment;
+	Array * array;
+	FunctionCall * functionCall;
+} ObjectUnion;
+
+typedef enum {
+	OBJ_VARIABLE,
+	OBJ_XPATH,
+	OBJ_EXPRESSION,
+	OBJ_ASSIGNMENT,
+	OBJ_ARRAY
+} ObjectType;
+
+struct ObjectNode {
+	ObjectUnion object;
+	ObjectType type;
+};
+
+struct VariableNode {
+	ObjectNode * object; // Nulleable
+	ExpressionNode * arraySubexpression; // Nulleable 
+	char * name;
+}; 
+
+typedef struct {
+	ParameterDefinitionNode * parameters;
+	ScopeNode * scope;
+	bool_t isArrow;
+} LambdaNode;
+
+
+typedef struct {
+	ExpressionNode * expression;
+	char * name;
+} AttributeNode;
+
+
+struct AttributeListNode {
+	AttributeNode * attribute;
+	AttributeListNode * next;
+}; 
+
+typedef union {
+	LiteralNode * literal;
+	ObjectNode * object;
+	AttributeListNode * attributes;
+} OperandUnion;
+
+typedef enum {
+	LITERAL,
+	OBJECT,
+	ATTRIBUTE_LIST
+} OperandType;
+
+typedef struct {
+	OperandUnion data;
+	OperandType type;
+} OperandNode;
+
+typedef enum {
+	OP_RAW,
+	OP_PLUS,
+	OP_MINUS,
+	OP_MULTIPLICATION
+} OperationType;
+
+typedef enum {
+	UNARY_MINUS,
+	UNARY_GENERIC
+} UnaryOperator;
+
+typedef enum {
+	BINARY_PLUS,
+	BINARY_MINUS,
+	BINARY_MULTIPLICATION,
+	BINARY_GENERIC
+} BinaryOperator;
+
+typedef union {
+	UnaryOperator * unaryOp;
+	BinaryOperator * binaryOp;
+	char * op;
+} OperatorUnion;
+
+
+struct OperationNode {
+	OperationNode * left; // Nullable
+	OperandNode * right; 
+	OperationType type;
+	OperatorUnion operator; // Nullable
+};
 
 typedef union {
 	OperationNode * operation;
 	LambdaNode * lambda;
-} ExpressionNode;
+} ExpressionUnion;
 
-typedef enum {
-	CONST,
-	LET,
-	VAR
-} declaration_type_t;
+struct ExpressionNode {
+	ExpressionUnion expression;
+	bool_t isOperation;
+};
 
 typedef struct {
-	declaration_type_t type;
+	variable_scope_t type;
 	char * name;
+	char * op; // TODO: Revisar si es mejor usar enums 
 	ExpressionNode * expression;
 } Declaration;
 
-typedef struct {
+struct Assignment {
 	VariableNode * variable;
+	char * op; // TODO: Revisar si es mejor usar enums 
 	ExpressionNode * expression;
-} Assignment;
+};
 
 struct ParameterDefinitionNode {
 	ParameterDefinitionNode * parameterDefinitionList;
@@ -95,10 +272,18 @@ typedef struct {
 	ScopeNode * scope;
 } FunctionNode;
 
+
 typedef union {
 	IfControlNode * ifControl;
 	ScopeNode * scope;
+} ElseControlUnion;
+
+
+typedef struct {
+	ElseControlUnion data;
+	bool_t isScope;
 } ElseControlNode;
+
 
 struct IfControlNode{
 	ExpressionNode * condition;
@@ -128,7 +313,18 @@ typedef struct {
 typedef union {
 	ExpressionNode * expression;
 	Declaration * declaration;
-	Assignment * assignment
+	Assignment * assignment;
+} ForExpressionUnion;
+
+typedef enum {
+	FOR_EXPRESSION,
+	FOR_DECLARATION,
+	FOR_ASSIGNMENT
+} ForExpressionType;
+
+typedef struct {
+	ForExpressionUnion expression;
+	ForExpressionType type;
 } ForExpressionNode;
 
 typedef struct {
@@ -143,11 +339,24 @@ typedef struct {
 	ScopeNode * scope;
 } WhileControl;
 
-typedef struct {
+typedef union {
 	IfControlNode * ifControl;
 	TryControlNode * tryControl;
 	ForControl * forControl;
 	WhileControl * whileControl;
+} ControlUnion;
+
+typedef enum {
+	IF_CONTROL,
+	TRY_CONTROL,
+	FOR_CONTROL,
+	WHILE_CONTROL
+} ControlType;
+
+
+typedef struct {
+	ControlUnion control;
+	ControlType type;
 } ControlNode;
 
 typedef enum {
@@ -155,10 +364,10 @@ typedef enum {
 	ASSERT_FALSE,
 	ASSERT_EQUALS,
 	ASSERT_NOT_EQUALS
-} assertion_type_t;
+} AssertionType;
 
 typedef struct {
-	assertion_type_t type;
+	AssertionType type;
 	ExpressionNode * expression;
 	ExpressionNode * expected;
 } Assertion;
@@ -166,6 +375,16 @@ typedef struct {
 typedef struct {
 	ExpressionNode * expression;
 } Return;
+
+typedef enum {
+	STATEMENT_EXPRESSION,
+	STATEMENT_DECLARATION,
+	STATEMENT_ASSIGNMENT,
+	STATEMENT_FUNCTION,
+	STATEMENT_CONTROL,
+	STATEMENT_ASSERTION,
+	STATEMENT_RETURN
+} StatementType;
 
 typedef union {
 	ExpressionNode * expression;
@@ -175,6 +394,12 @@ typedef union {
 	ControlNode * control;
 	Assertion * assertion;
 	Return * ret;
+} StatementUnion;
+
+
+typedef struct {
+	StatementUnion statementUnion;
+	StatementType type;
 } StatementNode; 
 
 struct StatementListNode {
@@ -182,19 +407,19 @@ struct StatementListNode {
 	StatementNode * statement;
 };
 
-struct ScopeNode{
+struct ScopeNode {
 	StatementListNode * statementList;
 };
 
 typedef enum {
-	BEFORE_ALL,
-	AFTER_ALL,
-	CUSTOM
-} module_type_t; 
+	MODULE_BEFORE_ALL,
+	MODULE_AFTER_ALL,
+	MODULE_CUSTOM
+} ModuleType; 
 
 typedef struct {
 	char * name;
-	module_type_t type;	
+	ModuleType type;	
 	ScopeNode * scope;
 } ModuleNode; 
 
@@ -208,9 +433,20 @@ typedef struct {
 	ModuleListNode * moduleList;
 } SuiteNode;
 
+// Program
 typedef union {
 	SuiteNode * suite;
 	StatementListNode * statementList;
+} ProgramUnion;
+
+typedef enum {
+	PROG_SUITE,
+	PROG_STATEMENT_LIST
+} ProgramType;
+
+typedef struct {
+	ProgramUnion program;
+	ProgramType type;
 } Program;
 
 #endif

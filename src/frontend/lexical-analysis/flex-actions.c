@@ -2,7 +2,7 @@
 #include "flex-actions.h"
 #include <stdlib.h>
 #include <string.h>
-#include "../types.h"
+#include "../../shared/types.h"
 
 /**
  * Implementación de "flex-actions.h".

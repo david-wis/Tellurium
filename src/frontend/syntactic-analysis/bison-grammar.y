@@ -5,7 +5,7 @@
 %}
 
 %code requires {
-	#include "../types.h"
+	#include "../../shared/types.h"
 }
 
 // Tipos de dato utilizados en las variables semánticas ($$, $1, $2, etc.).
@@ -21,23 +21,23 @@
 	StatementNode * statement;
 
 	FunctionNode * function;
-	ParameterDefinitionsNode * parameterDefinitions;
+	ParameterDefinitionNode * parameterDefinitions;
 
 	ControlNode * control;
 	IfControlNode * ifControl;
 	ElseControlNode * elseControl;
 	ForExpressionNode * forExpression;
 
-	TryExceptionNode * tryException;
-	RetryExceptionNode * retryException;
+	TryControlNode * tryControl;
+	RetryControlNode * retryControl;
 	
 	ExpressionNode * expression;
 	LambdaNode * lambda;
 	ObjectNode * object;
 
 	OperationNode * operation;
-	UnaryOperatorNode * unaryOperator;
-	BinaryOperatorNode * binaryOperator;
+	UnaryOperator unaryOperator;
+	BinaryOperator binaryOperator;
 	OperandNode * operand;
 	
 	AttributeListNode * attributeList;
@@ -144,8 +144,8 @@
 %type <ifControl> if
 %type <elseControl> else
 %type <forExpression> forExpression
-%type <tryException> try
-%type <retryException> retry
+%type <tryControl> try
+%type <retryControl> retry
 %type <expression> expression
 %type <operation> operation
 %type <binaryOperator> binaryOperator
@@ -286,12 +286,12 @@ attribute: NAME COLON expression													{ } // attribute -> NAME : expressi
 
 object: variable																	{ } // object -> $(expression) o #(expression)
 	| XPATH_OPERATOR expression CLOSE_PARENTHESIS									{ } // object -> (variable = expression)
+	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // object -> ( expression )
 	| OPEN_PARENTHESIS variable ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS	{ } // object -> ( variable = expression )
 	| OPEN_BRACKET CLOSE_BRACKET													{ } // object -> [ ] (empty array)
 	| OPEN_BRACKET parameters CLOSE_BRACKET											{ } // object -> [ parameters ] (array with paraneters)		 */
 	| object OPEN_PARENTHESIS CLOSE_PARENTHESIS										{ } // object -> NAME ()	
 	| object OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS							{ } // object -> NAME ( parameters )	
-	| OPEN_PARENTHESIS expression CLOSE_PARENTHESIS									{ } // object -> ( expression )
 	;
 
 variable: NAME 																		{ } // variable -> NAME

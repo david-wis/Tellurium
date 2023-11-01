@@ -24,7 +24,7 @@ typedef enum {
 } actionkey_t;
 
 typedef enum {
-    FALSE,
+    FALSE = 0,
     TRUE
 } bool_t;
 
