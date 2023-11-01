@@ -11,46 +11,46 @@
 // Tipos de dato utilizados en las variables semánticas ($$, $1, $2, etc.).
 %union {
 	// No-terminales (backend).
-	/*
-	Program program;
-	Expression expression;
-	Factor factor;
-	Constant constant;
-	...
-	*/
+	Program * program;
 
-	// No-terminales (frontend).
-	int program;
-	int suite;
-	int moduleList;
-	int module;
-	int scope;
-	int statementList;
-	int statement;
-	int function;
-	int parameterDefinitions;
-	int control;
-	int ifControl;
-	int elseControl;
-	int forExpression;
-	int tryException;
-	int retryException;
-	int expression;
-	int lambda;
-	int object;
-	int operation;
-	int unaryOperator;
-	int binaryOperator;
-	int operand;
-	int attributeList;
-	int attribute;
-	int variable;
-	int sequence;
-	int actionList;
-	int action;
-	int parameters;	
-	int literal;
-	int exceptionSet;
+	SuiteNode * suite;
+	ModuleListNode * moduleList;
+	ModuleNode * module;
+	ScopeNode * scope;
+	StatementListNode * statementList;
+	StatementNode * statement;
+
+	FunctionNode * function;
+	ParameterDefinitionsNode * parameterDefinitions;
+
+	ControlNode * control;
+	IfControlNode * ifControl;
+	ElseControlNode * elseControl;
+	ForExpressionNode * forExpression;
+
+	TryExceptionNode * tryException;
+	RetryExceptionNode * retryException;
+	
+	ExpressionNode * expression;
+	LambdaNode * lambda;
+	ObjectNode * object;
+
+	OperationNode * operation;
+	UnaryOperatorNode * unaryOperator;
+	BinaryOperatorNode * binaryOperator;
+	OperandNode * operand;
+	
+	AttributeListNode * attributeList;
+	AttributeNode * attribute;
+	VariableNode * variable;
+
+	SequenceNode * sequence;
+	ActionListNode * actionList;
+	ActionNode * action;
+
+	ParametersNode * parameters;	
+	LiteralNode * literal;
+	ExceptionSetNode * exceptionSet;
 
 
 	// Terminales.
@@ -192,7 +192,6 @@ module: MODULE scope 											{ } // module -> Module scope
 	| AFTER_ALL scope 											{ } // module -> AfterAll scope
 	;
 
-
 scope: OPEN_BRACE statementList CLOSE_BRACE  					{ } // scope -> { statementList }
 	;
 
@@ -202,14 +201,14 @@ statementList: %empty 											{ }
 
 statement: expression SEMICOLON									{ } // statement -> expression ;
 	| VARIABLE NAME ASSIGNMENT_OPERATOR expression SEMICOLON	{ } // statement -> var NAME = expression ;
-	| VARIABLE NAME SEMICOLON									{ } // statement -> var NAME ;
 	| variable ASSIGNMENT_OPERATOR expression SEMICOLON			{ } // statement -> NAME = expression ;
-	| function 													{ } // statement -> function
+	| VARIABLE NAME SEMICOLON									{ } // statement -> var NAME ;
 	| RETURN expression SEMICOLON								{ } // statement -> return expression ;
 	| RETURN SEMICOLON											{ } // statement -> return ;
-	| control													{ } // statement -> control
-	| ASSERT expression SEMICOLON								{ } // statement -> assert expression ; 
 	| ASSERT_COMPARE expression COMMA expression SEMICOLON		{ } // statement -> assert expression , expression ; 
+	| ASSERT expression SEMICOLON								{ } // statement -> assert expression ; 
+	| function 													{ } // statement -> function
+	| control													{ } // statement -> control
 	; 
 
 function: FUNCTION NAME OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 	{ } // function -> "function" NAME ( parameters ) scope
@@ -237,7 +236,7 @@ else: ELSE if 															{ } // else -> "else" if
 forExpression: %empty 													{ }
 	| expression														{ } // forExpression -> expression
 	| variable ASSIGNMENT_OPERATOR expression							{ } // forExpression -> variable = expression
-	| VARIABLE variable ASSIGNMENT_OPERATOR expression						{ } // forExpression -> var variable = expression
+	| VARIABLE NAME ASSIGNMENT_OPERATOR expression						{ } // forExpression -> var variable = expression
 	;
 
 try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope						{ } // try -> "try" scope retry "catch" ( NAME ) scope
