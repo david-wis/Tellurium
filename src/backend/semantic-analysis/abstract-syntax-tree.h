@@ -83,9 +83,9 @@ typedef enum {
 typedef union {
 	int integer;
 	char * string; // Also used for number 
-	bool_t bool;
+	bool_t boolean;
+	null_literal_t nullLiteral;
 	SequenceNode * sequence;
-
 } LiteralUnion; 
 
 typedef struct {
@@ -94,8 +94,8 @@ typedef struct {
 } LiteralNode;
 
 struct ParametersNode {
-	ParametersNode * next;
 	ExpressionNode * expression;
+	ParametersNode * next;
 };
 
 typedef enum {
@@ -106,7 +106,7 @@ typedef enum {
 
 
 typedef struct {
-	char * name;
+	action_key_t * key_value;
 	ActionKeyState type;
 } Key;
 
@@ -118,16 +118,16 @@ typedef union {
 typedef enum {
 	ACTION_KEY,
 	ACTION_STREAM
-} action_type_t;
+} ActionType;
 
 typedef struct {
 	ActionUnion action;
-	action_type_t type;
+	ActionType type;
 } ActionNode;
 
 struct ActionListNode {
-	ActionListNode * next;
 	ActionNode * action;
+	ActionListNode * next;
 };
 
 struct SequenceNode {
@@ -139,9 +139,15 @@ typedef struct {
 } Array;
 
 typedef struct {
-	ObjectNode * object;
+	ObjectNode * callable;
 	ParametersNode * parameters; // Nullable
 } FunctionCall;
+
+typedef struct {
+	cardinality_t cardinality;
+	ExpressionNode * expression;
+} XPath;
+
 
 typedef union {
 	VariableNode * variable;
@@ -149,6 +155,7 @@ typedef union {
 	Assignment * assignment;
 	Array * array;
 	FunctionCall * functionCall;
+	XPath * xpath;
 } ObjectUnion;
 
 typedef enum {
@@ -165,9 +172,9 @@ struct ObjectNode {
 };
 
 struct VariableNode {
+	char * name;
 	ObjectNode * object; // Nulleable
 	ExpressionNode * arraySubexpression; // Nulleable 
-	char * name;
 }; 
 
 typedef struct {
@@ -178,8 +185,8 @@ typedef struct {
 
 
 typedef struct {
-	ExpressionNode * expression;
 	char * name;
+	ExpressionNode * expression;
 } AttributeNode;
 
 
@@ -206,16 +213,13 @@ typedef struct {
 } OperandNode;
 
 typedef enum {
-	OP_RAW,
-	OP_PLUS,
-	OP_MINUS,
-	OP_MULTIPLICATION
-} OperationType;
-
-typedef enum {
 	UNARY_MINUS,
 	UNARY_GENERIC
 } UnaryOperator;
+
+typedef struct {
+	UnaryOperator operator;
+} UnaryOperatorNode;
 
 typedef enum {
 	BINARY_PLUS,
@@ -224,17 +228,20 @@ typedef enum {
 	BINARY_GENERIC
 } BinaryOperator;
 
+typedef struct {
+	BinaryOperator operator;
+} BinaryOperatorNode;
+
 typedef union {
-	UnaryOperator * unaryOp;
-	BinaryOperator * binaryOp;
-	char * op;
+	void * noOp;
+	UnaryOperatorNode * unaryOp;
+	BinaryOperatorNode * binaryOp;
 } OperatorUnion;
 
 
 struct OperationNode {
-	OperationNode * left; // Nullable
+	OperandNode * left; // Nullable
 	OperandNode * right; 
-	OperationType type;
 	OperatorUnion operator; // Nullable
 };
 
@@ -292,7 +299,7 @@ struct IfControlNode{
 } ;
 
 struct ExceptionSetNode {
-	ExceptionSetNode * exceptionSet;
+	ExceptionSetNode * next;
 	char * exception;
 };
 
@@ -319,7 +326,8 @@ typedef union {
 typedef enum {
 	FOR_EXPRESSION,
 	FOR_DECLARATION,
-	FOR_ASSIGNMENT
+	FOR_ASSIGNMENT,
+	FOR_EMPTY
 } ForExpressionType;
 
 typedef struct {
@@ -359,22 +367,11 @@ typedef struct {
 	ControlType type;
 } ControlNode;
 
-typedef enum {
-	ASSERT_TRUE,
-	ASSERT_FALSE,
-	ASSERT_EQUALS,
-	ASSERT_NOT_EQUALS
-} AssertionType;
-
 typedef struct {
-	AssertionType type;
+	assertion_t type;
 	ExpressionNode * expression;
 	ExpressionNode * expected;
 } Assertion;
-
-typedef struct {
-	ExpressionNode * expression;
-} Return;
 
 typedef enum {
 	STATEMENT_EXPRESSION,
@@ -393,7 +390,6 @@ typedef union {
 	FunctionNode * function;
 	ControlNode * control;
 	Assertion * assertion;
-	Return * ret;
 } StatementUnion;
 
 

@@ -37,25 +37,25 @@ single_line_comment  "//".*
 
 "<|"            { return BeginSequencePatternAction(); }
 
-"CONTROL"       { return KeyPatternAction(yytext, CONTROL); }
-"SHIFT"         { return KeyPatternAction(yytext, SHIFT); }
-"ALT"           { return KeyPatternAction(yytext, ALT); }
+"CONTROL"       { return KeyPatternAction(yytext, KEY_CONTROL); }
+"SHIFT"         { return KeyPatternAction(yytext, KEY_SHIFT); }
+"ALT"           { return KeyPatternAction(yytext, KEY_ALT); }
 
-"LEFT"          { return KeyPatternAction(yytext, LEFT); }
-"RIGHT"         { return KeyPatternAction(yytext, RIGHT); }
-"UP"            { return KeyPatternAction(yytext, UP); }   
-"DOWN"          { return KeyPatternAction(yytext, DOWN); }
+"LEFT"          { return KeyPatternAction(yytext, KEY_LEFT); }
+"RIGHT"         { return KeyPatternAction(yytext, KEY_RIGHT); }
+"UP"            { return KeyPatternAction(yytext, KEY_UP); }   
+"DOWN"          { return KeyPatternAction(yytext, KEY_DOWN); }
 
-"ENTER"         { return KeyPatternAction(yytext, ENTER); }
-"SPACE"         { return KeyPatternAction(yytext, SPACE); }  
-"BACKSPACE"     { return KeyPatternAction(yytext, BACKSPACE); }
-"DELETE"        { return KeyPatternAction(yytext, DELETE); } 
-"TAB"           { return KeyPatternAction(yytext, TAB); }
-"ESCAPE"        { return KeyPatternAction(yytext, ESCAPE); }
-"PAGEUP"        { return KeyPatternAction(yytext, PAGE_UP); }
-"PAGEDOWN"      { return KeyPatternAction(yytext, PAGE_DOWN); }
-"END"           { return KeyPatternAction(yytext, END); }
-"HOME"          { return KeyPatternAction(yytext, HOME); }
+"ENTER"         { return KeyPatternAction(yytext, KEY_ENTER); }
+"SPACE"         { return KeyPatternAction(yytext, KEY_SPACE); }  
+"BACKSPACE"     { return KeyPatternAction(yytext, KEY_BACKSPACE); }
+"DELETE"        { return KeyPatternAction(yytext, KEY_DELETE); } 
+"TAB"           { return KeyPatternAction(yytext, KEY_TAB); }
+"ESCAPE"        { return KeyPatternAction(yytext, KEY_ESCAPE); }
+"PAGEUP"        { return KeyPatternAction(yytext, KEY_PAGE_UP); }
+"PAGEDOWN"      { return KeyPatternAction(yytext, KEY_PAGE_DOWN); }
+"END"           { return KeyPatternAction(yytext, KEY_END); }
+"HOME"          { return KeyPatternAction(yytext, KEY_HOME); }
 
 "|>"            { return EndSequencePatternAction(); }
 
@@ -108,10 +108,10 @@ single_line_comment  "//".*
 "BeforeAll"               { return BeforeAllPatternAction(); }
 "AfterAll"                { return AfterAllPatternAction(); }
 
-"assertTrue"              { return AssertPatternAction(); }
-"assertFalse"             { return AssertPatternAction(); }
-"assertEquals"            { return AssertComparePatternAction(); }
-"assertNotEquals"         { return AssertComparePatternAction(); }
+"assertTrue"              { return AssertPatternAction(TRUTHY); }
+"assertFalse"             { return AssertPatternAction(FALSY); }
+"assertEquals"            { return AssertComparePatternAction(EQUAL); }
+"assertNotEquals"         { return AssertComparePatternAction(NOT_EQUAL); }
 
 "retry"                   { return RetryPatternAction(); }
 "try"                     { return TryPatternAction(); }

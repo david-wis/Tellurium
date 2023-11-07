@@ -34,7 +34,7 @@ token KeyDownPatternAction();
 
 token KeyUpPatternAction();
 
-token KeyPatternAction(const char * lexeme, actionkey_t key);
+token KeyPatternAction(const char * lexeme, action_key_t key);
 
 token EndSequencePatternAction();
 

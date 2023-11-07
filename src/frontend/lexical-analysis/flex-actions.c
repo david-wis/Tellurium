@@ -65,7 +65,7 @@ token BeginSequencePatternAction() {
 	return BEGIN_SEQUENCE;
 }
 
-token KeyPatternAction(const char * lexeme, actionkey_t key) {
+token KeyPatternAction(const char * lexeme, action_key_t key) {
 	LogDebug("[Flex] KeyPatternAction: '%s' .", lexeme);
 	yylval.key = key;
 	return KEY;
@@ -116,7 +116,7 @@ token UnaryOperatorPatternAction(const char * lexeme, const int length) {
 }
 
 token AssignmentOperatorPatternAction(const char * lexeme, const int length) {
-	LogDebug("[Flex] AssignmentOperatorPatternAction: '='.");
+	LogDebug("[Flex] AssignmentOperatorPatternAction.");
 	char * lexemeCopy = copyLexeme(lexeme, length);
 	yylval.operator = lexemeCopy;
 	return ASSIGNMENT_OPERATOR;
@@ -218,9 +218,9 @@ token AssertPatternAction(assertion_t assertion) {
 	return ASSERT;
 }
 
-token AssertComparePatternAction(cmp_assertion_t assertion) {
+token AssertComparePatternAction(assertion_t assertion) {
 	LogDebug("[Flex] AssertComparePatternAction.");
-	yylval.cmpAssertionType = assertion;
+	yylval.assertionType = assertion;
 	return ASSERT_COMPARE;
 }
 
@@ -304,19 +304,19 @@ token BooleanPatternAction(const char * lexeme, bool_t boolean) {
 
 token NullPatternAction() {
 	LogDebug("[Flex] NullPatternAction.");
-	yylval.token = NULL_LITERAL;
+	yylval.nullLiteral = NULL_VALUE;
 	return NULL_LITERAL;
 }
 
 token UndefinedPatternAction() {
 	LogDebug("[Flex] UndefinedPatternAction.");
-	yylval.token = UNDEFINED;
+	yylval.nullLiteral = UNDEFINED_VALUE;
 	return UNDEFINED;
 }
 
 token NaNPatternAction() {
 	LogDebug("[Flex] NaNPatternAction.");
-	yylval.token = NAN;
+	yylval.nullLiteral = NAN_VALUE;
 	return NAN;
 }
 

@@ -2,26 +2,26 @@
 #define TYPES_H
 
 typedef enum {
-    CONTROL,
-    SHIFT,
-    ALT,
+    KEY_CONTROL,
+    KEY_SHIFT,
+    KEY_ALT,
 
-    LEFT,
-    RIGHT,  
-    UP,
-    DOWN,
+    KEY_LEFT,
+    KEY_RIGHT,  
+    KEY_UP,
+    KEY_DOWN,
 
-    ENTER,
-    SPACE,  
-    BACKSPACE,
-    DELETE,     
-    TAB,    
-    ESCAPE,
-    PAGE_UP,       
-    PAGE_DOWN,
-    END,            
-    HOME
-} actionkey_t;
+    KEY_ENTER,
+    KEY_SPACE,  
+    KEY_BACKSPACE,
+    KEY_DELETE,     
+    KEY_TAB,    
+    KEY_ESCAPE,
+    KEY_PAGE_UP,       
+    KEY_PAGE_DOWN,
+    KEY_END,            
+    KEY_HOME
+} action_key_t;
 
 typedef enum {
     FALSE = 0,
@@ -30,13 +30,10 @@ typedef enum {
 
 typedef enum {
    TRUTHY,
-   FALSY 
+   FALSY,
+   EQUAL,
+   NOT_EQUAL,
 } assertion_t;
-
-typedef enum {
-    EQUAL,
-    NOT_EQUAL,
-} cmp_assertion_t;
 
 typedef enum {
     ONE,
@@ -49,4 +46,9 @@ typedef enum {
     VAR
 } variable_scope_t;
 
+typedef enum {
+    NAN_VALUE,
+    UNDEFINED_VALUE,
+    NULL_VALUE
+} null_literal_t;
 #endif

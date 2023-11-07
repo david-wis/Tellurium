@@ -65,7 +65,12 @@ add_executable(Compiler
 	src/backend/support/logger.c
 	src/frontend/lexical-analysis/flex-actions.c
 	src/frontend/lexical-analysis/flex-scanner.c
-	src/frontend/syntactic-analysis/bison-actions.c
+	src/frontend/syntactic-analysis/general-actions.c
+	src/frontend/syntactic-analysis/control-actions.c
+	src/frontend/syntactic-analysis/operation-actions.c
+	src/frontend/syntactic-analysis/sequence-actions.c
+	src/frontend/syntactic-analysis/expression-actions.c
+	src/frontend/syntactic-analysis/function-actions.c
 	src/frontend/syntactic-analysis/bison-parser.c
 	# Agregar otros archivos *.c (si no se incluyen, no se compilan).
 	# ...

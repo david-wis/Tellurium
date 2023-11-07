@@ -45,9 +45,6 @@ typedef struct {
 	// Indica si la compilación tuvo problemas hasta el momento.
 	boolean succeed;
 
-	// Indica el resultado de la compilación (para la calculadora).
-	int result;
-
 	// El nodo raíz del AST (se usará cuando se implemente el backend).
 	Program * program;
 
