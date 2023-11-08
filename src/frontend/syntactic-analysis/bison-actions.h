@@ -60,7 +60,7 @@ ExpressionNode * ExpressionGrammarAction(ExpressionUnion expression, bool_t isOp
 ObjectNode * ObjectGrammarAction(ObjectUnion object, ObjectType type);
 ObjectNode * AssignmentObjectGrammarAction(	VariableNode * variable, char * op, ExpressionNode * expression);
 ObjectNode * ArrayObjectGrammarAction(ParametersNode * parameters);
-ObjectNode * FunctionCallGrammarAction(ObjectNode * callable, ParametersNode * parameters);
+ObjectNode * FunctionCallObjectGrammarAction(ObjectNode * callable, ParametersNode * parameters);
 ObjectNode * XPathObjectGrammarAction(cardinality_t cardinality, ExpressionNode * expression);
 AttributeListNode * AttributeListGrammarAction(AttributeNode * attribute, AttributeListNode * next);
 AttributeNode * AttributeGrammarAction(char * name, ExpressionNode * expression);

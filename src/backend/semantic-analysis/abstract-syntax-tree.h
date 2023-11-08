@@ -106,8 +106,8 @@ typedef enum {
 
 
 typedef struct {
-	action_key_t * key_value;
-	ActionKeyState type;
+	action_key_t key_value;
+	ActionKeyState state;
 } Key;
 
 typedef union {
@@ -163,7 +163,8 @@ typedef enum {
 	OBJ_XPATH,
 	OBJ_EXPRESSION,
 	OBJ_ASSIGNMENT,
-	OBJ_ARRAY
+	OBJ_ARRAY,
+	OBJ_FUNCTION_CALL
 } ObjectType;
 
 struct ObjectNode {
@@ -240,7 +241,7 @@ typedef union {
 
 
 struct OperationNode {
-	OperandNode * left; // Nullable
+	OperationNode * left; // Nullable
 	OperandNode * right; 
 	OperatorUnion operator; // Nullable
 };
@@ -258,8 +259,8 @@ struct ExpressionNode {
 typedef struct {
 	variable_scope_t type;
 	char * name;
-	char * op; // TODO: Revisar si es mejor usar enums 
-	ExpressionNode * expression;
+	char * op; //Nullable TODO: Revisar si es mejor usar enums 
+	ExpressionNode * expression; //Nullable
 } Declaration;
 
 struct Assignment {

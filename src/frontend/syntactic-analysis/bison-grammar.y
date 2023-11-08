@@ -289,8 +289,8 @@ object: variable																	{ $$ = ObjectGrammarAction((ObjectUnion) { .var
 	| OPEN_PARENTHESIS variable ASSIGNMENT_OPERATOR expression CLOSE_PARENTHESIS	{ $$ = AssignmentObjectGrammarAction($2, $3, $4); } // object -> ( variable = expression )
 	| OPEN_BRACKET CLOSE_BRACKET													{ $$ = ArrayObjectGrammarAction(NULL); } // object -> [ ] (empty array)
 	| OPEN_BRACKET parameters CLOSE_BRACKET											{ $$ = ArrayObjectGrammarAction($2); } // object -> [ parameters ] (array with paraneters)		 */
-	| object OPEN_PARENTHESIS CLOSE_PARENTHESIS										{ $$ = FunctionCallGrammarAction($1, NULL); } // object -> NAME ()	
-	| object OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS							{ $$ = FunctionCallGrammarAction($1, $3); } // object -> NAME ( parameters )	
+	| object OPEN_PARENTHESIS CLOSE_PARENTHESIS										{ $$ = FunctionCallObjectGrammarAction($1, NULL); } // object -> NAME ()	
+	| object OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS							{ $$ = FunctionCallObjectGrammarAction($1, $3); } // object -> NAME ( parameters )	
 	| XPATH_OPERATOR expression CLOSE_PARENTHESIS									{ $$ = XPathObjectGrammarAction($1, $2); } // object -> (variable = expression)
 	;
 

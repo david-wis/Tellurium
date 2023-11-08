@@ -32,46 +32,76 @@ Program * ProgramGrammarAction(ProgramUnion p, ProgramType type) {
 	* cuyo campo "succeed" indica si la compilación fue o no exitosa, la cual
 	* es utilizada en la función "main".
 	*/
+	Program * program = calloc(1, sizeof(*program));
+	program->program = p;
+	program->type = type;
 	state.succeed = true;
-
-
-
-
-	return NULL;
+	return program;
 }
 
 SuiteNode * SuiteGrammarAction(char * name, ModuleListNode * moduleList) {
-	return NULL;
+	SuiteNode * suite = calloc(1, sizeof(*suite));
+	suite->name = name;
+	suite->moduleList = moduleList;
+	return suite;
 }
 
 ModuleListNode * ModuleListGrammarAction(ModuleListNode * moduleList, ModuleNode * module) {
-	return NULL;
+	ModuleListNode * node = calloc(1, sizeof(*node));
+	node->moduleList = moduleList;
+	node->module = module;
+	return node;
 }
 
 ModuleNode * ModuleGrammarAction(char * name, ModuleType type, ScopeNode * scope) {
-	return NULL;
+	ModuleNode * module = calloc(1, sizeof(*module));
+	module->name = name;
+	module->type = type;
+	module->scope = scope;
+	return module;
 }
 
 ScopeNode * ScopeGrammarAction(StatementListNode * statementList) {
-	return NULL;
+	ScopeNode * scope = calloc(1, sizeof(*scope));
+	scope->statementList = statementList;
+	return scope;
 }
 
 StatementListNode * StatementListGrammarAction(StatementListNode * statementList, StatementNode * statement) {
-	return NULL;
+	StatementListNode * node = calloc(1, sizeof(*node));
+	node->statementList = statementList;
+	node->statement = statement;
+	return node;
 }
 
 StatementNode * StatementGrammarAction(StatementUnion statementUnion, StatementType type) {
-	return NULL;
+	StatementNode * node = calloc(1, sizeof(*node));
+	node->statementUnion = statementUnion;
+	node->type = type;
+	return node;
 }
 
 StatementNode * DeclarationStatementGrammarAction(variable_scope_t type, char * name, char * op, ExpressionNode * expression) {
-	return NULL;
+	Declaration * declaration = calloc(1, sizeof(*declaration));
+	declaration->type = type;
+	declaration->name = name;
+	declaration->op = op;
+	declaration->expression = expression;
+	return StatementGrammarAction((StatementUnion) { .declaration = declaration } , STATEMENT_DECLARATION);
 }
 
 StatementNode * AssignmentStatementGrammarAction(VariableNode * variable, char * op, ExpressionNode * expression) {
-	return NULL;
+	Assignment * assignment = calloc(1, sizeof(*assignment));
+	assignment->variable = variable;
+	assignment->op = op;
+	assignment->expression = expression;
+	return StatementGrammarAction((StatementUnion) { .assignment = assignment }, STATEMENT_ASSIGNMENT);
 }
 
 StatementNode * AssertionStatementGrammarAction(assertion_t type, ExpressionNode * expression, ExpressionNode * expected) {
-	return NULL;
+	Assertion * assertion = calloc(1, sizeof(*assertion));
+	assertion->type = type;
+	assertion->expression = expression;
+	assertion->expected = expected;
+	return StatementGrammarAction((StatementUnion) { .assertion = assertion }, STATEMENT_ASSERTION);
 }
