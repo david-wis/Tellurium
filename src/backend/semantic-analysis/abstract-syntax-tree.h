@@ -2,6 +2,7 @@
 #define ABSTRACT_SYNTAX_TREE_HEADER
 
 #include "../../shared/types.h"
+#include <stdbool.h>
 
 /**
 * Se realiza este tipo de definiciones cuando el tipo de dato debe
@@ -83,7 +84,7 @@ typedef enum {
 typedef union {
 	int integer;
 	char * string; // Also used for number 
-	bool_t boolean;
+	bool boolean;
 	null_literal_t nullLiteral;
 	SequenceNode * sequence;
 } LiteralUnion; 
@@ -181,7 +182,7 @@ struct VariableNode {
 typedef struct {
 	ParameterDefinitionNode * parameters;
 	ScopeNode * scope;
-	bool_t isArrow;
+	bool isArrow;
 } LambdaNode;
 
 
@@ -215,6 +216,7 @@ typedef struct {
 
 typedef enum {
 	UNARY_MINUS,
+	UNARY_AWAIT,
 	UNARY_GENERIC
 } UnaryOperator;
 
@@ -253,7 +255,7 @@ typedef union {
 
 struct ExpressionNode {
 	ExpressionUnion expression;
-	bool_t isOperation;
+	bool isOperation;
 };
 
 typedef struct {
@@ -275,6 +277,7 @@ struct ParameterDefinitionNode {
 };
 
 typedef struct {
+	bool async;
 	char * name;
 	ParameterDefinitionNode * parameters;
 	ScopeNode * scope;
@@ -289,7 +292,7 @@ typedef union {
 
 typedef struct {
 	ElseControlUnion data;
-	bool_t isScope;
+	bool isScope;
 } ElseControlNode;
 
 

@@ -32,16 +32,16 @@ StatementNode * AssignmentStatementGrammarAction(VariableNode * variable, char *
 StatementNode * AssertionStatementGrammarAction(assertion_t type, ExpressionNode * expression, ExpressionNode * expected);
 
 // function-actions.c
-FunctionNode * FunctionGrammarAction(char * name, ParameterDefinitionNode * parameters, ScopeNode * scope);
+FunctionNode * FunctionGrammarAction(bool async, char * name, ParameterDefinitionNode * parameters, ScopeNode * scope);
 ParameterDefinitionNode * ParameterDefinitionGrammarAction(ParameterDefinitionNode * list, char * name);
-LambdaNode * LambdaGrammarAction(ParameterDefinitionNode * parameters, ScopeNode * scope, bool_t isArrow);
+LambdaNode * LambdaGrammarAction(ParameterDefinitionNode * parameters, ScopeNode * scope, bool isArrow);
 
 // control-actions.c
 ControlNode * ControlGrammarAction(ControlUnion control, ControlType type);
 ControlNode * ForControlGrammarAction(ForExpressionNode * forExpressionStart, ForExpressionNode * forExpressionCondition, ForExpressionNode * forExpressionNext, ScopeNode * scope);
 ControlNode * WhileControlGrammarAction(ExpressionNode * condition, ScopeNode * scope);
 IfControlNode * IfControlGrammarAction(ExpressionNode * condition, ScopeNode * scope, ElseControlNode * elseControl);
-ElseControlNode * ElseControlGrammarAction(ElseControlUnion data, bool_t isScope);
+ElseControlNode * ElseControlGrammarAction(ElseControlUnion data, bool isScope);
 ForExpressionNode * ForExpressionGrammarAction(ForExpressionUnion expression, ForExpressionType type);
 ForExpressionNode * DeclarationForExpressionGrammarAction(variable_scope_t type, char * name, char * op, ExpressionNode * expression);
 ForExpressionNode * AssignmentForExpressionGrammarAction(VariableNode * variable, char * op, ExpressionNode * expression);
@@ -56,7 +56,7 @@ BinaryOperatorNode * BinaryOperatorGrammarAction(BinaryOperator operator);
 OperandNode * OperandGrammarAction(OperandType type, OperandUnion data);
 
 // expression-actions.c
-ExpressionNode * ExpressionGrammarAction(ExpressionUnion expression, bool_t isOperation);
+ExpressionNode * ExpressionGrammarAction(ExpressionUnion expression, bool isOperation);
 ObjectNode * ObjectGrammarAction(ObjectUnion object, ObjectType type);
 ObjectNode * AssignmentObjectGrammarAction(	VariableNode * variable, char * op, ExpressionNode * expression);
 ObjectNode * ArrayObjectGrammarAction(ParametersNode * parameters);

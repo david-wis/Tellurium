@@ -1,6 +1,6 @@
 #include "bison-actions.h"
 
-ExpressionNode * ExpressionGrammarAction(ExpressionUnion expression, bool_t isOperation) {
+ExpressionNode * ExpressionGrammarAction(ExpressionUnion expression, bool isOperation) {
     ExpressionNode * node = calloc(1, sizeof(*node));
     node->expression = expression;
     node->isOperation = isOperation;

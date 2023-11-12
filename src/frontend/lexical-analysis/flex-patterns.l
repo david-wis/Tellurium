@@ -127,10 +127,12 @@ single_line_comment  "//".*
 "let"                     { return VarPatternAction(LET); }
 "const"                   { return VarPatternAction(CONST); }
 "function"                { return FunctionPatternAction(); }
+"async"                   { return AsyncPatternAction(); }
+"await"                   { return AwaitPatternAction(); }
 "return"                  { return ReturnPatternAction(); }
 
-"true"                    { return BooleanPatternAction(yytext, TRUE); }
-"false"                   { return BooleanPatternAction(yytext, FALSE); }
+"true"                    { return BooleanPatternAction(yytext, true); }
+"false"                   { return BooleanPatternAction(yytext, false); }
 
 "null"                   { return NullPatternAction(); }
 "undefined"              { return UndefinedPatternAction(); }

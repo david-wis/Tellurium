@@ -109,9 +109,13 @@ token VarPatternAction(variable_scope_t variableScope);
 
 token FunctionPatternAction();
 
+token AsyncPatternAction();
+
+token AwaitPatternAction();
+
 token ReturnPatternAction();
 
-token BooleanPatternAction(const char * lexeme, bool_t boolean);
+token BooleanPatternAction(const char * lexeme, bool boolean);
 
 token NullPatternAction();
 

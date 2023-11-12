@@ -31,7 +31,7 @@ IfControlNode * IfControlGrammarAction(ExpressionNode * condition, ScopeNode * s
     return node;
 }
 
-ElseControlNode * ElseControlGrammarAction(ElseControlUnion data, bool_t isScope){
+ElseControlNode * ElseControlGrammarAction(ElseControlUnion data, bool isScope){
     ElseControlNode * node = calloc(1, sizeof(*node));
     node->data = data;
     node->isScope = isScope;

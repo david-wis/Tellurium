@@ -290,13 +290,25 @@ token FunctionPatternAction() {
 	return FUNCTION;
 }
 
+token AsyncPatternAction() {
+	LogDebug("[Flex] AsyncPatternAction.");
+	yylval.token = ASYNC;
+	return ASYNC;
+}
+
+token AwaitPatternAction() {
+	LogDebug("[Flex] AwaitPatternAction.");
+	yylval.token = AWAIT;
+	return AWAIT;
+}
+
 token ReturnPatternAction() {
 	LogDebug("[Flex] ReturnPatternAction.");
 	yylval.token = RETURN;
 	return RETURN;
 }
 
-token BooleanPatternAction(const char * lexeme, bool_t boolean) {
+token BooleanPatternAction(const char * lexeme, bool boolean) {
 	LogDebug("[Flex] BooleanPatternAction: '%s'.", lexeme);
 	yylval.boolean = boolean; 
 	return BOOLEAN;

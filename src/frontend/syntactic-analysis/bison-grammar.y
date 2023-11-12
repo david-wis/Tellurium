@@ -60,7 +60,7 @@
 	char * string;
 	char * operator;
 	char * name;
-	bool_t boolean;
+	bool boolean;
 	action_key_t key;
 	assertion_t assertionType;
 	cardinality_t cardinality;
@@ -118,6 +118,8 @@
 %token <token> ARROW
 %token <variableScope> VARIABLE
 %token <token> FUNCTION
+%token <token> ASYNC
+%token <token> AWAIT
 %token <token> RETURN
 
 %token <integer> INTEGER
@@ -211,8 +213,10 @@ statement: expression SEMICOLON									{ $$ = StatementGrammarAction((Statement
 	| control													{ $$ = StatementGrammarAction((StatementUnion) { .control = $1 }, STATEMENT_CONTROL);  } // statement -> control
 	; 
 
-function: FUNCTION NAME OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 	{ $$ = FunctionGrammarAction($2, $4, $6); } // function -> "function" NAME ( parameters ) scope
-	| FUNCTION NAME OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 							{ $$ = FunctionGrammarAction($2, NULL, $5); }  // function -> "function" NAME ( ) scope
+function: FUNCTION NAME OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 		{ $$ = FunctionGrammarAction(false, $2, $4, $6); } // function -> "function" NAME ( parameters ) scope
+	| ASYNC FUNCTION NAME OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 	{ $$ = FunctionGrammarAction(true, $3, $5, $7); } // async function -> "function" NAME ( parameters ) scope
+	| FUNCTION NAME OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 								{ $$ = FunctionGrammarAction(false, $2, NULL, $5); }  // function -> "function" NAME ( ) scope
+	| ASYNC FUNCTION NAME OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 							{ $$ = FunctionGrammarAction(true, $3, NULL, $6); }  // async function -> "function" NAME ( ) scope
 	;
 
 parameterDefinitions: parameterDefinitions COMMA NAME								{ $$ = ParameterDefinitionGrammarAction($1, $3); } // parameterDefinitions -> parameterDefinitions , NAME
@@ -262,6 +266,7 @@ operation: operand 																	{ $$ = OperationGrammarAction((OperatorUnion
 	;
 
 unaryOperator: MINUS																{ $$ = UnaryOperatorGrammarAction(UNARY_MINUS); } // unaryOperator -> -
+	| AWAIT 																		{ $$ = UnaryOperatorGrammarAction(UNARY_AWAIT); } // unaryOperator -> await
 	| UNARY_OPERATOR																{ $$ = UnaryOperatorGrammarAction(UNARY_GENERIC); } // unaryOperator -> UNARY_OPERATOR
 	;
 

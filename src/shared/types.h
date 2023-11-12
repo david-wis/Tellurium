@@ -24,11 +24,6 @@ typedef enum {
 } action_key_t;
 
 typedef enum {
-    FALSE = 0,
-    TRUE
-} bool_t;
-
-typedef enum {
    TRUTHY,
    FALSY,
    EQUAL,
