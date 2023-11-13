@@ -18,6 +18,11 @@ const int main(const int argumentCount, const char ** arguments) {
 		LogInfo("Argumento %d: '%s'", i, arguments[i]);
 	}
 
+	if (argumentCount < 2) {
+		LogError("No se especifico el archivo de entrada.");
+		return -1;
+	}
+
 	// Compilar el programa de entrada.
 	LogInfo("Compilando...\n");
 	const int result = yyparse();
@@ -27,7 +32,7 @@ const int main(const int argumentCount, const char ** arguments) {
 			// inicial de la gramática satisfactoriamente.
 			if (state.succeed) {
 				LogInfo("La compilacion fue exitosa.");
-				// Generator(state.result);
+				generate(state.program, arguments[1]);
 			}
 			else {
 				LogError("Se produjo un error en la aplicacion.");
@@ -43,6 +48,10 @@ const int main(const int argumentCount, const char ** arguments) {
 		default:
 			LogError("Error desconocido mientras se ejecutaba el analizador Bison (codigo %d).", result);
 	}
+
+	// TODO: Free program
+
+
 	LogInfo("Fin.");
 	return result;
 }

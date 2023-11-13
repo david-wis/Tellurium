@@ -10,7 +10,7 @@ FunctionNode * FunctionGrammarAction(bool async, char * name, ParameterDefinitio
 
 ParameterDefinitionNode * ParameterDefinitionGrammarAction(ParameterDefinitionNode * list, char * name) {
     ParameterDefinitionNode * node = calloc(1, sizeof(*node));
-    node->parameterDefinitionList = list;
+    node->next = list;
     node->name = name;
     return node;
 }

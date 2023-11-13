@@ -351,7 +351,6 @@ token NumberPatternAction(const char * lexeme, const int length) {
 	LogDebug("[Flex] NumberPatternAction: '%s' (length = %d).", lexeme, length);
 	char * lexemeCopy = copyLexeme(lexeme, length);
 	yylval.number = lexemeCopy;
-	free(lexemeCopy);
 	return NUMBER;
 }
 

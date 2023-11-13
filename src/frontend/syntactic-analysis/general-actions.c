@@ -36,6 +36,7 @@ Program * ProgramGrammarAction(ProgramUnion p, ProgramType type) {
 	program->program = p;
 	program->type = type;
 	state.succeed = true;
+	state.program = program;
 	return program;
 }
 

@@ -13,7 +13,7 @@ echo "Compiler should accept..."
 echo ""
 
 for test in $(ls test/accept/); do
-	cat "test/accept/$test" | ./bin/Compiler >/dev/null 2>&1
+	cat "test/accept/$test" | ./bin/Compiler $test >/dev/null 2>&1
 	RESULT="$?"
 	if [ "$RESULT" == "0" ]; then
 		echo -e "    $test, ${GREEN}and it does${OFF} (status $RESULT)"
@@ -27,7 +27,7 @@ echo "Compiler should reject..."
 echo ""
 
 for test in $(ls test/reject/); do
-	cat "test/reject/$test" | ./bin/Compiler >/dev/null 2>&1
+	cat "test/reject/$test" | ./bin/Compiler $test >/dev/null 2>&1
 	RESULT="$?"
 	if [ "$RESULT" != "0" ]; then
 		echo -e "    $test, ${GREEN}and it does${OFF} (status $RESULT)"

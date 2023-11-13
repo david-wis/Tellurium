@@ -19,3 +19,5 @@ bison-parser.h
 flex-scanner.c
 program
 .bash_history
+output/
+input/

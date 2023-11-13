@@ -9,15 +9,17 @@ OperationNode * OperationGrammarAction(OperatorUnion operator, OperationNode * l
     return operation;
 }
 
-UnaryOperatorNode * UnaryOperatorGrammarAction(UnaryOperator operator) {
+UnaryOperatorNode * UnaryOperatorGrammarAction(UnaryOperator operator, char * op) {
     UnaryOperatorNode * unaryOperator = calloc(1, sizeof(*unaryOperator));
     unaryOperator->operator = operator;
+    unaryOperator->op = op;
     return unaryOperator;   
 }
 
-BinaryOperatorNode * BinaryOperatorGrammarAction(BinaryOperator operator) {
+BinaryOperatorNode * BinaryOperatorGrammarAction(BinaryOperator operator, char * op) {
     BinaryOperatorNode * binaryOperator = calloc(1, sizeof(*binaryOperator));
     binaryOperator->operator = operator;
+    binaryOperator->op = op;
     return binaryOperator;   
 }
 

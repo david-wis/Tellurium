@@ -265,15 +265,15 @@ operation: operand 																	{ $$ = OperationGrammarAction((OperatorUnion
 	| operation binaryOperator operand												{ $$ = OperationGrammarAction((OperatorUnion) { .binaryOp = $2}, $1, $3); } // operation -> operation binaryOperator operand
 	;
 
-unaryOperator: MINUS																{ $$ = UnaryOperatorGrammarAction(UNARY_MINUS); } // unaryOperator -> -
-	| AWAIT 																		{ $$ = UnaryOperatorGrammarAction(UNARY_AWAIT); } // unaryOperator -> await
-	| UNARY_OPERATOR																{ $$ = UnaryOperatorGrammarAction(UNARY_GENERIC); } // unaryOperator -> UNARY_OPERATOR
+unaryOperator: MINUS																{ $$ = UnaryOperatorGrammarAction(UNARY_MINUS, NULL); } // unaryOperator -> -
+	| AWAIT 																		{ $$ = UnaryOperatorGrammarAction(UNARY_AWAIT, NULL); } // unaryOperator -> await
+	| UNARY_OPERATOR																{ $$ = UnaryOperatorGrammarAction(UNARY_GENERIC, $1); } // unaryOperator -> UNARY_OPERATOR
 	;
 
-binaryOperator: PLUS																{ $$ = BinaryOperatorGrammarAction(BINARY_PLUS); } // binaryOperator -> +
-	| MINUS																			{ $$ = BinaryOperatorGrammarAction(BINARY_MINUS); } // binaryOperator -> -
-	| MULTIPLICATION																{ $$ = BinaryOperatorGrammarAction(BINARY_MULTIPLICATION); } // binaryOperator -> *
-	| BINARY_OPERATOR																{ $$ = BinaryOperatorGrammarAction(BINARY_GENERIC); } // binaryOperator -> BINARY_OPERATOR
+binaryOperator: PLUS																{ $$ = BinaryOperatorGrammarAction(BINARY_PLUS, NULL); } // binaryOperator -> +
+	| MINUS																			{ $$ = BinaryOperatorGrammarAction(BINARY_MINUS, NULL); } // binaryOperator -> -
+	| MULTIPLICATION																{ $$ = BinaryOperatorGrammarAction(BINARY_MULTIPLICATION, NULL); } // binaryOperator -> *
+	| BINARY_OPERATOR																{ $$ = BinaryOperatorGrammarAction(BINARY_GENERIC, $1); } // binaryOperator -> BINARY_OPERATOR
 	;
 
 operand: literal 											         				{ $$ = OperandGrammarAction(LITERAL, (OperandUnion) { .literal = $1 } ); } // operand -> literal

@@ -51,8 +51,8 @@ ExceptionSetNode * ExceptionSetGrammarAction(char * exception, ExceptionSetNode 
 
 // operation-actions.c
 OperationNode * OperationGrammarAction(OperatorUnion operator, OperationNode * left, OperandNode * right);
-UnaryOperatorNode * UnaryOperatorGrammarAction(UnaryOperator operator);
-BinaryOperatorNode * BinaryOperatorGrammarAction(BinaryOperator operator); 
+UnaryOperatorNode * UnaryOperatorGrammarAction(UnaryOperator operator, char * op);
+BinaryOperatorNode * BinaryOperatorGrammarAction(BinaryOperator operator, char * op); 
 OperandNode * OperandGrammarAction(OperandType type, OperandUnion data);
 
 // expression-actions.c
