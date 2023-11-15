@@ -66,7 +66,7 @@ void OperandGenerate(OperandNode * operand) {
         case ATTRIBUTE_LIST:
             fputs("{\n", outputFile);
             AttributeListGenerate(operand->data.attributes);
-            fputs("\n}\n", outputFile);
+            fputs("\n}", outputFile);
             break;
         default:
             break;

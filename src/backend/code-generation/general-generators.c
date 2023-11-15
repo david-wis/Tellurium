@@ -20,13 +20,35 @@ void ProgramGenerate(Program * program) {
 
 void SuiteGenerate(SuiteNode * suite) {
 	LogDebug("\tSuiteGenerate\n");
+	if (suite->name != NULL)
+		fprintf(outputFile, "suiteName = \"%s\";\n", suite->name);
+	ModuleListGenerate(suite->moduleList);
 }
 
 void ModuleListGenerate(ModuleListNode * moduleList) {
 	LogDebug("\tModuleListGenerate\n");
+	if (moduleList->module == NULL && moduleList->moduleList == NULL) {
+		return;
+	}
+	ModuleListGenerate(moduleList->moduleList);
+	ModuleGenerate(moduleList->module);
 }
+
 void ModuleGenerate(ModuleNode * module){
 	LogDebug("\tModuleGenerate\n");
+	if (module->name != NULL)
+		fprintf(outputFile, "tellurium_suite_state.name = \"%s\";\n", module->name);
+	else 
+		fprintf(outputFile, "tellurium_suite_state.name = \"Tellurium test module\";\n"); // TODO improve
+	fputs("tellurium_suite_state.count++;\n", outputFile);
+	fputs("try ", outputFile);	
+	ScopeGenerate(module->scope);
+	fputs("catch (error) {\n", outputFile);
+	fputs("\tconsole.log(`Module ${tellurium_suite_state.name} failed`)\n", outputFile);
+	fputs("\tsuccess = false;\n", outputFile);
+	fputs("} finally {\n", outputFile);
+	fputs("\tif (tellurium_suite_state.sucess) tellurium_suite_state.passedCount++;\n", outputFile);
+	fputs("}\n", outputFile);
 }
 
 void ScopeGenerate(ScopeNode * scope) {
