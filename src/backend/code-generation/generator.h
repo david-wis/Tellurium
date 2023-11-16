@@ -25,7 +25,6 @@ void IfControlGenerate(IfControlNode * ifControl);
 void ElseControlGenerate(ElseControlNode * elseControl);
 void ForExpressionGenerate(ForExpressionNode * forExpression);
 void TryControlGenerate(TryControlNode * tryControl);
-void RetryControlGenerate(RetryControlNode * retryControl);
 void ExceptionSetGenerate(ExceptionSetNode * exceptionSet);
 //operation-generation.c
 void OperationGenerate(OperationNode * operation);

@@ -304,7 +304,7 @@ struct IfControlNode{
 
 struct ExceptionSetNode {
 	ExceptionSetNode * next;
-	char * exception;
+	VariableNode * exception;
 };
 
 typedef struct RetryControlNode {

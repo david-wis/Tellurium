@@ -247,13 +247,13 @@ try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope						{ 
 	| TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope FINALLY scope			{ $$ = TryControlGrammarAction($2, $3, $6, $8, $10); } // try -> try scope retry catch ( NAME ) scope finally scope
 	; 
 
-retry: %empty																					{ $$ = RetryControlGrammarAction(NULL, 0, NULL); } // retry -> %empty
+retry: %empty																					{ $$ = NULL; } // retry -> %empty
 	| RETRY OPEN_PARENTHESIS exceptionSet COMMA INTEGER CLOSE_PARENTHESIS scope					{ $$ = RetryControlGrammarAction($7, $5, $3); } // retry -> retry ( exceptionSet , INTEGER ) scope
 	| RETRY OPEN_PARENTHESIS exceptionSet CLOSE_PARENTHESIS scope								{ $$ = RetryControlGrammarAction($5, 0, $3); } // retry -> retry ( exceptionSet ) scope
 	; 
 
-exceptionSet: NAME																	{ $$ = ExceptionSetGrammarAction($1, NULL); } // exceptionSet -> NAME
-	| exceptionSet PIPE NAME														{ $$ = ExceptionSetGrammarAction($3, $1); } // exceptionSet -> exceptionSet | NAME
+exceptionSet: variable																{ $$ = ExceptionSetGrammarAction($1, NULL); } // exceptionSet -> NAME
+	| exceptionSet PIPE variable													{ $$ = ExceptionSetGrammarAction($3, $1); } // exceptionSet -> exceptionSet | NAME
 	;
 	
 expression: operation																{ $$ = ExpressionGrammarAction((ExpressionUnion) {.operation = $1}, true); } // expression -> operation

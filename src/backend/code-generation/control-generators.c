@@ -5,8 +5,11 @@
 
 extern FILE * outputFile;
 
+int retryVariableCount = 0;
+
 static void ForControlGenerateAux(ForControl * forControl);
 static void WhileControlGenerateAux(WhileControl * whileControl);
+static void RetryControlGenerateAux(TryControlNode * tryControl);
 
 void ControlGenerate(ControlNode * control) {
     LogDebug("\tControlGenerate\n");
@@ -87,24 +90,51 @@ void ForExpressionGenerate(ForExpressionNode * forExpression) {
 
 void TryControlGenerate(TryControlNode * tryControl) {
     LogDebug("\tTryControlGenerate\n");
-    fputs("try ", outputFile);
-    ScopeGenerate(tryControl->tryScope);
+    if (tryControl->retryControl != NULL) {
+        RetryControlGenerateAux(tryControl);
+    } else{
+        fputs("try ", outputFile);
+        ScopeGenerate(tryControl->tryScope);
+    }
     fprintf(outputFile, " catch (%s) ", tryControl->exceptionName);    
     ScopeGenerate(tryControl->catchScope);
-    // RetryControlGenerate(tryControl->retryControl);
     if (tryControl->finallyScope != NULL) {
         fputs(" finally ", outputFile);
         ScopeGenerate(tryControl->finallyScope);
     }
 }
 
-void RetryControlGenerate(RetryControlNode * retryControl) {
-    // fputs("retry ", outputFile);
-    // ScopeGenerate(retryControl->retryScope);
-    // //TODO
+static void RetryControlGenerateAux(TryControlNode * tryControl) {
+    retryVariableCount++;
+    RetryControlNode * retryControl = tryControl->retryControl;
+    fputs("try {\n", outputFile);
+    fprintf(outputFile, "let tellurium_finished%d = false;\n", retryVariableCount);
+    fprintf(outputFile, "let tellurium_retry%d = %d;\n", retryVariableCount, retryControl->retryCount);
+    fprintf(outputFile, "for (let tellurium_i%d = 0; !tellurium_finished%d && tellurium_i%d < tellurium_retry%d; tellurium_i%d++) {\n", 
+            retryVariableCount, retryVariableCount, retryVariableCount, retryVariableCount, retryVariableCount);
+    fputs("try {\n", outputFile); 
+    ScopeGenerate(tryControl->tryScope);
+    fprintf(outputFile, "tellurium_finished%d = true;\n", retryVariableCount);
+    fprintf(outputFile, "} catch (tellurium_e%d) {\n", retryVariableCount);
+    fputs("if (", outputFile);
+    ExceptionSetGenerate(retryControl->exceptionSet);
+    fputs(") continue;\n", outputFile);
+    fprintf(outputFile, "throw tellurium_e%d;\n}\n", retryVariableCount);
+    fputs("}\n", outputFile);
+    fprintf(outputFile, "if (!tellurium_finished%d) {\n", retryVariableCount);
+    ScopeGenerate(retryControl->retryScope);
+    fputs("}\n", outputFile);
+    fputs("}\n", outputFile);
+    retryVariableCount--;
 }
 
 void ExceptionSetGenerate(ExceptionSetNode * exceptionSet) {
-    //TODO
+    if (exceptionSet->next != NULL) {
+        ExceptionSetGenerate(exceptionSet->next);
+        fputs(" || ", outputFile);
+    }
+    fprintf(outputFile, "tellurium_e%d instanceof ", retryVariableCount);
+    VariableGenerate(exceptionSet->exception);
 }
 
+//e instanceof NoSuchElementError || error instanceof StaleElementReferenceError

@@ -1,6 +1,7 @@
 const Selenium = require('selenium-webdriver');
 const assert = require('node:assert');
 const driver = new Selenium.Builder().forBrowser('firefox').build();
+const TelluriumExceptions = require('selenium-webdriver/lib/error');
 var suiteName = 'Tellurium Test Suite';
 
 async function navigate(url) {

@@ -80,9 +80,9 @@ RetryControlNode * RetryControlGrammarAction(ScopeNode * retryScope, unsigned re
     return node;
 }
 
-ExceptionSetNode * ExceptionSetGrammarAction(char * exception, ExceptionSetNode * next){
+ExceptionSetNode * ExceptionSetGrammarAction(VariableNode * variable, ExceptionSetNode * next){
     ExceptionSetNode * node = calloc(1, sizeof(*node));
-    node->exception = exception;
+    node->exception = variable;
     node->next = next;
     return node;
 }

@@ -47,7 +47,7 @@ ForExpressionNode * DeclarationForExpressionGrammarAction(variable_scope_t type,
 ForExpressionNode * AssignmentForExpressionGrammarAction(VariableNode * variable, char * op, ExpressionNode * expression);
 TryControlNode * TryControlGrammarAction(ScopeNode * tryScope, RetryControlNode * retryControl, char * exceptionName, ScopeNode * catchScope, ScopeNode * finallyScope);
 RetryControlNode * RetryControlGrammarAction(ScopeNode * retryScope, unsigned retryCount, ExceptionSetNode * exceptionSet);
-ExceptionSetNode * ExceptionSetGrammarAction(char * exception, ExceptionSetNode * next);
+ExceptionSetNode * ExceptionSetGrammarAction(VariableNode * variable, ExceptionSetNode * next);
 
 // operation-actions.c
 OperationNode * OperationGrammarAction(BinaryOperatorNode * operator, OperationNode * left, OperandNode * right);

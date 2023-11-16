@@ -1,9 +1,9 @@
 try {
     var a = Array(-1);
 } retry(RangeError) {
-    console.log("Error creating the array - retrying");
-} catch(e) {
     console.log("Error creating the array - giving up");
+} catch(e) {
+    console.log("Error creating the array - other error");
 } finally {
     console.log("Done");
 }
@@ -11,9 +11,9 @@ try {
 try {
     var a = Array(-1);
 } retry(RangeError, 2) {
-    console.log("Error creating the array - retrying");
-} catch(e) {
     console.log("Error creating the array - giving up");
+} catch(e) {
+    console.log("Error creating the array - other error");
 } finally {
     console.log("Done");
 }
@@ -27,13 +27,13 @@ try {
 
 
 
-    console.log("Error creating the array - retrying");
+    console.log("Error creating the array - giving up");
 
 
 } catch(e) {
 
 
-    console.log("Error creating the array - giving up");
+    console.log("Error creating the array - other error");
 }
 
 try {
@@ -42,18 +42,18 @@ try {
 
 
 
-    console.log("Error creating the array - retrying");
+    console.log("Error creating the array - giving up");
 } 
 
 
 catch(e) {
-    console.log("Error creating the array - giving up");
+    console.log("Error creating the array - other error");
 }
 
 try {
     var a = Array(-1);
 } catch(e) {
-    console.log("Error creating the array - giving up");
+    console.log("Error creating the array - other error");
 }  finally {
     console.log("Done");
 }
@@ -61,7 +61,7 @@ try {
 try {
     var a = Array(-1);
 } catch( e      ) {
-    console.log("Error creating the array - giving up");
+    console.log("Error creating the array - other error");
 }
 
 
