@@ -2,7 +2,7 @@
 #define TYPES_H
 
 typedef enum {
-    KEY_CONTROL,
+    KEY_CONTROL = 0,
     KEY_SHIFT,
     KEY_ALT,
 

@@ -100,7 +100,7 @@ struct ParametersNode {
 };
 
 typedef enum ActionKeyState {
-	KEY_STATE_DOWN,	
+	KEY_STATE_DOWN = 0,	
 	KEY_STATE_UP,	
 	KEY_STATE_PRESS
 } ActionKeyState; 

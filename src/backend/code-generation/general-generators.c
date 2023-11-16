@@ -44,10 +44,10 @@ void ModuleGenerate(ModuleNode * module){
 	fputs("try ", outputFile);	
 	ScopeGenerate(module->scope);
 	fputs("catch (error) {\n", outputFile);
-	fputs("\tconsole.log(`Module ${tellurium_suite_state.name} failed`)\n", outputFile);
+	fputs("\tconsole.log(`Module ${tellurium_suite_state.name} failed ${error}`)\n", outputFile);
 	fputs("\tsuccess = false;\n", outputFile);
 	fputs("} finally {\n", outputFile);
-	fputs("\tif (tellurium_suite_state.sucess) tellurium_suite_state.passedCount++;\n", outputFile);
+	fputs("\tif (tellurium_suite_state.success) tellurium_suite_state.passedCount++;\n", outputFile);
 	fputs("}\n", outputFile);
 }
 

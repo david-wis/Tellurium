@@ -318,8 +318,8 @@ actionList: actionList action														{ $$ = ActionListGrammarAction($1, $2
 	;
 
 action: KEY 																		{ $$ = KeyActionGrammarAction($1, KEY_STATE_PRESS); } // action -> KEY
-	| PLUS KEY	 																	{ $$ = KeyActionGrammarAction($1, KEY_STATE_DOWN); } // action -> + KEY
-	| MINUS KEY																		{ $$ = KeyActionGrammarAction($1, KEY_STATE_UP); } // action -> - KEY
+	| PLUS KEY	 																	{ $$ = KeyActionGrammarAction($2, KEY_STATE_DOWN); } // action -> + KEY
+	| MINUS KEY																		{ $$ = KeyActionGrammarAction($2, KEY_STATE_UP); } // action -> - KEY
 	| STRING	 																	{ $$ = StreamActionGrammarAction($1); } // action -> STRING
 	;
 

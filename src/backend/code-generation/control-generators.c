@@ -31,12 +31,11 @@ void ControlGenerate(ControlNode * control) {
 static void ForControlGenerateAux(ForControl * forControl) {
     LogDebug("\tForControlGenerateAux\n");
     fputs("for (", outputFile);
-    LogDebug("\tlol\n");
     ForExpressionGenerate(forControl->forExpressionStart);
     fputs("; ", outputFile);
-    ForExpressionGenerate(forControl->forExpressionNext);
-    fputs("; ", outputFile);
     ForExpressionGenerate(forControl->forExpressionCondition);
+    fputs("; ", outputFile);
+    ForExpressionGenerate(forControl->forExpressionNext);
     fputc(')', outputFile);
     ScopeGenerate(forControl->scope);
 }

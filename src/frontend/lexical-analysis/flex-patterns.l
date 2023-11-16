@@ -136,7 +136,7 @@ single_line_comment  "//".*
 
 "null"                   { return NullPatternAction(); }
 "undefined"              { return UndefinedPatternAction(); }
-"nan"                    { return NaNPatternAction(); }
+"NaN"                    { return NaNPatternAction(); }
 
 {name}                      { return NamePatternAction(yytext, yyleng); }
 {digit}+				    { return IntegerPatternAction(yytext, yyleng); }

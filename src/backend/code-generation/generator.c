@@ -54,4 +54,3 @@ void generate(Program * program, const char * inputFile) {
 	LogInfo("Generacion de codigo finalizada.");	
 	fclose(outputFile);
 }
-

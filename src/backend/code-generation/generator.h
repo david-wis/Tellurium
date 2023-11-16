@@ -43,7 +43,6 @@ void LiteralGenerate(LiteralNode * literal);
 //sequence-generation.c
 void SequenceGenerate(SequenceNode * sequence);
 void ActionListGenerate(ActionListNode * actionList);
-void KeyActionGenerate(ActionNode * action);
-void StreamActionGenerate(ActionNode * action);
+void ActionGenerate(ActionNode * action);
 
 #endif

@@ -18,7 +18,11 @@ void ObjectGenerate(ObjectNode * object) {
             VariableGenerate(object->object.variable); 
             break;
         case OBJ_XPATH: 
-            // TODO
+            fputs(object->object.xpath->cardinality == ONE ? 
+                                "(await findByXPath(" : "(await findManyByXPath(", 
+                                 outputFile);
+            ExpressionGenerate(object->object.xpath->expression);
+            fputs("))", outputFile);
             break;
         case OBJ_EXPRESSION:
             fputc('(', outputFile);
@@ -120,7 +124,7 @@ void LiteralGenerate(LiteralNode * literal) {
             fputs("NaN", outputFile);
             break;
         case L_SEQUENCE:
-            // TODO
+            SequenceGenerate(literal->literalUnion.sequence);
             break;
         default:
             break;

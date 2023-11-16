@@ -19,7 +19,7 @@ void UnaryOperatorGenerate(UnaryOperatorNode * unaryOperator) {
     LogDebug("\tUnaryOperatorGenerate\n");
     switch (unaryOperator->operator) {
         case UNARY_AWAIT:
-            fputs("await", outputFile);
+            fputs("await ", outputFile);
             break;
         case UNARY_MINUS:
             fputs("-", outputFile);
