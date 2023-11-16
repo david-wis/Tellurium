@@ -30,6 +30,9 @@ void ParameterDefinitionGenerate(ParameterDefinitionNode * parameterDefinition) 
 
 void LambdaGenerate(LambdaNode * lambda) {
     LogDebug("\tLambdaGenerate\n");
+    if (lambda->async) {
+        fputs("async ", outputFile);
+    }
     fputs("(", outputFile);
     if (lambda->parameters != NULL) {
         ParameterDefinitionGenerate(lambda->parameters);

@@ -34,7 +34,7 @@ StatementNode * AssertionStatementGrammarAction(assertion_t type, ExpressionNode
 // function-actions.c
 FunctionNode * FunctionGrammarAction(bool async, char * name, ParameterDefinitionNode * parameters, ScopeNode * scope);
 ParameterDefinitionNode * ParameterDefinitionGrammarAction(ParameterDefinitionNode * list, char * name);
-LambdaNode * LambdaGrammarAction(ParameterDefinitionNode * parameters, ScopeNode * scope, bool isArrow);
+LambdaNode * LambdaGrammarAction(ParameterDefinitionNode * parameters, ScopeNode * scope, bool isArrow, bool isAsync);
 
 // control-actions.c
 ControlNode * ControlGrammarAction(ControlUnion control, ControlType type);
@@ -50,10 +50,10 @@ RetryControlNode * RetryControlGrammarAction(ScopeNode * retryScope, unsigned re
 ExceptionSetNode * ExceptionSetGrammarAction(char * exception, ExceptionSetNode * next);
 
 // operation-actions.c
-OperationNode * OperationGrammarAction(OperatorUnion operator, OperationNode * left, OperandNode * right);
+OperationNode * OperationGrammarAction(BinaryOperatorNode * operator, OperationNode * left, OperandNode * right);
 UnaryOperatorNode * UnaryOperatorGrammarAction(UnaryOperator operator, char * op);
 BinaryOperatorNode * BinaryOperatorGrammarAction(BinaryOperator operator, char * op); 
-OperandNode * OperandGrammarAction(OperandType type, OperandUnion data);
+OperandNode * OperandGrammarAction(OperandType type, OperandUnion data, UnaryOperatorNode * unaryOperator);
 
 // expression-actions.c
 ExpressionNode * ExpressionGrammarAction(ExpressionUnion expression, bool isOperation);

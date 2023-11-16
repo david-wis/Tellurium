@@ -1,5 +1,5 @@
 const Selenium = require('selenium-webdriver');
-
+const assert = require('node:assert');
 const driver = new Selenium.Builder().forBrowser('firefox').build();
 var suiteName = 'Tellurium Test Suite';
 
@@ -90,26 +90,37 @@ async function findByXPath(path) {
     return seleniumElementWrapper(element);
 }
 
+function telluriumAssert(expected, actual, strict) {
+    if (strict)
+        assert.strictEquals(expected, actual, `expected: ${expected}, actual: ${actual}`);
+    else
+        assert.equal(expected, actual, `expected: ${expected}, actual: ${actual}`);
+}
+
+function telluriumAssertNotEquals(expected, actual) {
+    assert.notEqual(expected, actual, `expected not equals: ${expected}`);
+}
+
 (async function main() {
   try {
-    await suite();
-    console.log(`Test suite ${suiteName} passed!`);
-    await driver.sleep(5000);
-  } finally {
-    await driver.quit();
-  }
-})();
-
-async function suite() {
-    // Before all (TODO)
-    await navigate('http://pawserver.it.itba.edu.ar/paw-2023b-12/search'); 
-
-    // Siempre lo ultimo de beforeAll es setear estado interno
     const tellurium_suite_state = {
       name: 'Tellurium Test Module',
       count: 0,
       passedCount: 0,
       success: true
     }
+    await suite(tellurium_suite_state);
+    console.info(`Test suite ${suiteName} finished with ${tellurium_suite_state.passedCount} of ${tellurium_suite_state.count} passed`);
+    await driver.sleep(5000);
+  } finally {
+    await driver.quit();
+  }
+})();
+
+async function suite(tellurium_suite_state) {
+    // Before all (TODO)
+    await navigate('http://pawserver.it.itba.edu.ar/paw-2023b-12/search'); 
+
+    // Siempre lo ultimo de beforeAll es setear estado interno
 
 

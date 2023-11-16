@@ -1,11 +1,10 @@
 #include "bison-actions.h"
 
-OperationNode * OperationGrammarAction(OperatorUnion operator, OperationNode * left, OperandNode * right) {
+OperationNode * OperationGrammarAction(BinaryOperatorNode * operator, OperationNode * left, OperandNode * right) {
     OperationNode * operation = calloc(1, sizeof(*operation)); 
     operation->left = left;
     operation->right = right;
     operation->operator = operator;
-    // TODO: Ver si hay errores?
     return operation;
 }
 
@@ -23,9 +22,10 @@ BinaryOperatorNode * BinaryOperatorGrammarAction(BinaryOperator operator, char *
     return binaryOperator;   
 }
 
-OperandNode * OperandGrammarAction(OperandType type, OperandUnion data){
+OperandNode * OperandGrammarAction(OperandType type, OperandUnion data, UnaryOperatorNode * unaryOperator){
     OperandNode * operand = calloc(1, sizeof(*operand));
     operand->type = type;
     operand->data = data;
+    operand->unaryOperator = unaryOperator;
     return operand;
 }

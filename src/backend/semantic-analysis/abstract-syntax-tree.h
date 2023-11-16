@@ -59,6 +59,7 @@ typedef struct IfControlNode IfControlNode;
 typedef struct ParameterDefinitionNode ParameterDefinitionNode;
 typedef struct ScopeNode ScopeNode;
 typedef struct OperationNode OperationNode; 
+typedef struct OperandNode OperandNode;
 typedef struct ObjectNode ObjectNode;
 typedef struct ActionListNode ActionListNode;
 typedef struct ParametersNode ParametersNode;
@@ -111,12 +112,12 @@ typedef struct Key {
 	ActionKeyState state;
 } Key;
 
-typedef union {
+typedef union ActionUnion {
 	Key * key;
 	char * stream;
 } ActionUnion;
 
-typedef enum {
+typedef enum ActionType {
 	ACTION_KEY,
 	ACTION_STREAM
 } ActionType;
@@ -183,6 +184,7 @@ typedef struct LambdaNode {
 	ParameterDefinitionNode * parameters;
 	ScopeNode * scope;
 	bool isArrow;
+	bool async;
 } LambdaNode;
 
 
@@ -197,24 +199,14 @@ struct AttributeListNode {
 	AttributeListNode * next;
 }; 
 
-typedef union {
+typedef union OperandUnion {
+	OperandNode * operand;
 	LiteralNode * literal;
 	ObjectNode * object;
 	AttributeListNode * attributes;
 } OperandUnion;
 
-typedef enum {
-	LITERAL,
-	OBJECT,
-	ATTRIBUTE_LIST
-} OperandType;
-
-typedef struct OperandNode {
-	OperandUnion data;
-	OperandType type;
-} OperandNode;
-
-typedef enum {
+typedef enum UnaryOperator {
 	UNARY_MINUS,
 	UNARY_AWAIT,
 	UNARY_GENERIC
@@ -224,6 +216,19 @@ typedef struct UnaryOperatorNode {
 	UnaryOperator operator;
 	char * op; //Nullable
 } UnaryOperatorNode;
+
+typedef enum OperandType {
+	LITERAL,
+	OBJECT,
+	ATTRIBUTE_LIST,
+	OPERAND
+} OperandType;
+
+struct OperandNode {
+	UnaryOperatorNode * unaryOperator; //Nullable
+	OperandUnion data;
+	OperandType type;
+};
 
 typedef enum BinaryOperator {
 	BINARY_PLUS,
@@ -237,16 +242,10 @@ typedef struct BinaryOperatorNode {
 	char * op; //Nullable
 } BinaryOperatorNode;
 
-typedef union OperatorUnion {
-	void * noOp;
-	UnaryOperatorNode * unaryOp;
-	BinaryOperatorNode * binaryOp;
-} OperatorUnion;
-
 struct OperationNode {
-	OperationNode * left; // Nullable
+	OperationNode * left; 
 	OperandNode * right; 
-	OperatorUnion operator; // Nullable
+	BinaryOperatorNode * operator; // Nullable
 };
 
 typedef union ExpressionUnion {

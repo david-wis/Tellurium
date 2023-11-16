@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef enum {
+typedef enum action_key_t {
     KEY_CONTROL = 0,
     KEY_SHIFT,
     KEY_ALT,
@@ -23,25 +23,25 @@ typedef enum {
     KEY_HOME
 } action_key_t;
 
-typedef enum {
+typedef enum assertion_t {
    TRUTHY,
    FALSY,
    EQUAL,
    NOT_EQUAL,
 } assertion_t;
 
-typedef enum {
+typedef enum cardinality_t {
     ONE,
     MANY
 } cardinality_t;
 
-typedef enum {
+typedef enum variable_scope_t {
     LET,
     CONST,
     VAR
 } variable_scope_t;
 
-typedef enum {
+typedef enum null_literal_t {
     NAN_VALUE,
     UNDEFINED_VALUE,
     NULL_VALUE

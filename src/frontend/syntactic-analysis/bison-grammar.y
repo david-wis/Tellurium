@@ -260,9 +260,8 @@ expression: operation																{ $$ = ExpressionGrammarAction((ExpressionU
 	| lambda																		{ $$ = ExpressionGrammarAction((ExpressionUnion) {.lambda = $1}, false); } // expression -> lambda
 	;
 
-operation: operand 																	{ $$ = OperationGrammarAction((OperatorUnion) { .noOp = NULL }, NULL, $1); } //operation -> operand
-	| unaryOperator operand															{ $$ = OperationGrammarAction((OperatorUnion) { .unaryOp = $1 }, NULL, $2); }// operation -> unaryOperator operand
-	| operation binaryOperator operand												{ $$ = OperationGrammarAction((OperatorUnion) { .binaryOp = $2}, $1, $3); } // operation -> operation binaryOperator operand
+operation: operand 																	{ $$ = OperationGrammarAction(NULL, NULL, $1); } //operation -> operand
+	| operation binaryOperator operand												{ $$ = OperationGrammarAction($2, $1, $3); } // operation -> operation binaryOperator operand
 	;
 
 unaryOperator: MINUS																{ $$ = UnaryOperatorGrammarAction(UNARY_MINUS, NULL); } // unaryOperator -> -
@@ -276,9 +275,10 @@ binaryOperator: PLUS																{ $$ = BinaryOperatorGrammarAction(BINARY_PL
 	| BINARY_OPERATOR																{ $$ = BinaryOperatorGrammarAction(BINARY_GENERIC, $1); } // binaryOperator -> BINARY_OPERATOR
 	;
 
-operand: literal 											         				{ $$ = OperandGrammarAction(LITERAL, (OperandUnion) { .literal = $1 } ); } // operand -> literal
-	| object																		{ $$ = OperandGrammarAction(OBJECT, (OperandUnion) { .object = $1 } ); } // operand -> object
-	| OPEN_BRACE attributeList CLOSE_BRACE											{ $$ = OperandGrammarAction(ATTRIBUTE_LIST, (OperandUnion) { .attributes = $2} ); } // operand -> { attributeList }
+operand: unaryOperator operand														{ $$ = OperandGrammarAction(OPERAND, (OperandUnion) { .operand = $2 }, $1); } // operand -> unaryOperator operand
+	| literal 											         					{ $$ = OperandGrammarAction(LITERAL, (OperandUnion) { .literal = $1 }, NULL); } // operand -> literal
+	| object																		{ $$ = OperandGrammarAction(OBJECT, (OperandUnion) { .object = $1 }, NULL); } // operand -> object
+	| OPEN_BRACE attributeList CLOSE_BRACE											{ $$ = OperandGrammarAction(ATTRIBUTE_LIST, (OperandUnion) { .attributes = $2}, NULL ); } // operand -> { attributeList }
 	;
 
 attributeList: %empty																{ $$ = AttributeListGrammarAction(NULL, NULL); } // attributeList -> %empty
@@ -304,10 +304,14 @@ variable: NAME 																		{ $$ = VariableGrammarAction($1, NULL, NULL); }
 	| object DOT NAME																{ $$ = VariableGrammarAction($3, $1, NULL); } // variable -> object . NAME
 	;
 
-lambda: OPEN_PARENTHESIS parameterDefinitions ARROW scope										{ $$ = LambdaGrammarAction($2, $4, true); } // lambda -> ( parameterDefinitions ) -> scope
-	| OPEN_PARENTHESIS ARROW scope																{ $$ = LambdaGrammarAction(NULL, $3, true); } // lambda -> () -> scope
-	| FUNCTION OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 					{ $$ = LambdaGrammarAction($3, $5, false); }  // lambda -> "function" ( parameterDefinitions ) scope
-	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 										{ $$ = LambdaGrammarAction(NULL, $4, false); }  // lambda -> "function" ( ) scope
+lambda: OPEN_PARENTHESIS parameterDefinitions ARROW scope										{ $$ = LambdaGrammarAction($2, $4, true, false); } // lambda -> ( parameterDefinitions ) -> scope
+	| OPEN_PARENTHESIS ARROW scope																{ $$ = LambdaGrammarAction(NULL, $3, true, false); } // lambda -> () -> scope
+	| FUNCTION OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 					{ $$ = LambdaGrammarAction($3, $5, false, false); }  // lambda -> "function" ( parameterDefinitions ) scope
+	| FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 										{ $$ = LambdaGrammarAction(NULL, $4, false, false); }  // lambda -> "function" ( ) scope
+	| ASYNC OPEN_PARENTHESIS parameterDefinitions ARROW scope									{ $$ = LambdaGrammarAction($3, $5, true, true); } // lambda -> ( parameterDefinitions ) -> scope
+	| ASYNC OPEN_PARENTHESIS ARROW scope														{ $$ = LambdaGrammarAction(NULL, $4, true, true); } // lambda -> () -> scope
+	| ASYNC FUNCTION OPEN_PARENTHESIS parameterDefinitions CLOSE_PARENTHESIS scope 				{ $$ = LambdaGrammarAction($4, $6, false, true); }  // lambda -> "function" ( parameterDefinitions ) scope
+	| ASYNC FUNCTION OPEN_PARENTHESIS CLOSE_PARENTHESIS scope 									{ $$ = LambdaGrammarAction(NULL, $5, false, true); }  // lambda -> "function" ( ) scope
 	;
 
 sequence: BEGIN_SEQUENCE actionList END_SEQUENCE									{ $$ = SequenceGrammarAction($2); } // sequence -> actionList

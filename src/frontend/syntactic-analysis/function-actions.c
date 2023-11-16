@@ -15,10 +15,11 @@ ParameterDefinitionNode * ParameterDefinitionGrammarAction(ParameterDefinitionNo
     return node;
 }
 
-LambdaNode * LambdaGrammarAction(ParameterDefinitionNode * parameters, ScopeNode * scope, bool isArrow) {
+LambdaNode * LambdaGrammarAction(ParameterDefinitionNode * parameters, ScopeNode * scope, bool isArrow, bool async) {
     LambdaNode * node = calloc(1, sizeof(*node));
     node->parameters = parameters;
     node->scope = scope;
     node->isArrow = isArrow;
+    node->async = async;
     return node;
 }

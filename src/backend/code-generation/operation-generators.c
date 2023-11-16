@@ -6,11 +6,9 @@ extern FILE * outputFile;
 
 void OperationGenerate(OperationNode * operation) {
     LogDebug("\tOperationGenerate\n");
-    if (operation->left == NULL && operation->operator.noOp != NULL) {
-        UnaryOperatorGenerate(operation->operator.unaryOp);
-    } else if (operation->operator.noOp != NULL) {
+    if (operation->operator != NULL) {
         OperationGenerate(operation->left);
-        BinaryOperatorGenerate(operation->operator.binaryOp);
+        BinaryOperatorGenerate(operation->operator);
     }
     OperandGenerate(operation->right);
 }
@@ -67,6 +65,10 @@ void OperandGenerate(OperandNode * operand) {
             fputs("{\n", outputFile);
             AttributeListGenerate(operand->data.attributes);
             fputs("\n}", outputFile);
+            break;
+        case OPERAND:
+            UnaryOperatorGenerate(operand->unaryOperator);
+            OperandGenerate(operand->data.operand);
             break;
         default:
             break;

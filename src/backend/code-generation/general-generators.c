@@ -4,6 +4,8 @@
 #include <stdio.h>
 extern FILE * outputFile;
 
+static void AssertionGenerateAux(Assertion * assertion);
+
 void ProgramGenerate(Program * program) {
     LogDebug("\tProgramGenerate\n");
 	switch (program->type) {
@@ -36,6 +38,7 @@ void ModuleListGenerate(ModuleListNode * moduleList) {
 
 void ModuleGenerate(ModuleNode * module){
 	LogDebug("\tModuleGenerate\n");
+	fputs("tellurium_suite_state.success = true;\n", outputFile);
 	if (module->name != NULL)
 		fprintf(outputFile, "tellurium_suite_state.name = \"%s\";\n", module->name);
 	else 
@@ -44,10 +47,11 @@ void ModuleGenerate(ModuleNode * module){
 	fputs("try ", outputFile);	
 	ScopeGenerate(module->scope);
 	fputs("catch (error) {\n", outputFile);
-	fputs("\tconsole.log(`Module ${tellurium_suite_state.name} failed ${error}`)\n", outputFile);
-	fputs("\tsuccess = false;\n", outputFile);
+	fputs("\tconsole.error(`Module ${tellurium_suite_state.name} failed ${error}`)\n", outputFile);
+	fputs("\ttellurium_suite_state.success = false;\n", outputFile);
 	fputs("} finally {\n", outputFile);
-	fputs("\tif (tellurium_suite_state.success) tellurium_suite_state.passedCount++;\n", outputFile);
+	fputs("\tif (tellurium_suite_state.success) { tellurium_suite_state.passedCount++;\n", outputFile);
+	fputs("\tconsole.info(`Module ${tellurium_suite_state.name} passed`);\n}\n", outputFile);
 	fputs("}\n", outputFile);
 }
 
@@ -86,7 +90,7 @@ void StatementGenerate(StatementNode * statement) {
 									  statement->statementUnion.assignment->expression);
 				break;
 			case STATEMENT_ASSERTION:
-				// TODO
+				AssertionGenerateAux(statement->statementUnion.assertion);
 				break;
 			case STATEMENT_RETURN:
 				fputs("return ", outputFile);
@@ -127,4 +131,35 @@ void AssignmentGenerateAux(VariableNode * variable, char * op, ExpressionNode * 
 	VariableGenerate(variable);
 	fprintf(outputFile, "%s", op);
 	ExpressionGenerate(expression);
+}
+
+static void AssertionGenerateAux(Assertion * assertion)  {
+	switch (assertion->type) {
+		case TRUTHY:
+			fputs("telluriumAssert(true, ", outputFile);
+			ExpressionGenerate(assertion->expression);
+			fputs(", false)", outputFile);
+			break;
+		case FALSY:
+			fputs("telluriumAssert(false, ", outputFile);
+			ExpressionGenerate(assertion->expression);
+			fputs(", false)", outputFile);
+			break;
+		case EQUAL:
+			fputs("telluriumAssert(", outputFile);
+			ExpressionGenerate(assertion->expected);
+			fputs(", ", outputFile);
+			ExpressionGenerate(assertion->expression);
+			fputs(", true)", outputFile);
+			break;
+		case NOT_EQUAL:
+			fputs("telluriumAssertNotEquals(expected, actual)", outputFile);
+			ExpressionGenerate(assertion->expected);
+			fputs(", ", outputFile);
+			ExpressionGenerate(assertion->expression);
+			fputs(")", outputFile);
+			break;
+		default:
+			break;
+	}
 }
