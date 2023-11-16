@@ -39,7 +39,11 @@ void ModuleListGenerate(ModuleListNode * moduleList) {
 
 void ModuleGenerate(ModuleNode * module){
 	LogDebug("\tModuleGenerate\n");
+	if (module->type == MODULE_AFTER_ALL || module->type == MODULE_BEFORE_ALL) return;
 
+	fputs("{\n", outputFile);
+	if (state.beforeAll != NULL)
+		StatementListGenerate(state.beforeAll->scope->statementList);
 
 	fputs("tellurium_suite_state.success = true;\n", outputFile);
 	if (module->name != NULL) {
@@ -56,6 +60,11 @@ void ModuleGenerate(ModuleNode * module){
 	fputs("} finally {\n", outputFile);
 	fputs("\tif (tellurium_suite_state.success) { tellurium_suite_state.passedCount++;\n", outputFile);
 	fputs("\tconsole.info(`Module ${tellurium_suite_state.name} passed`);\n}\n", outputFile);
+	fputs("}\n", outputFile);
+
+
+	if (state.afterAll != NULL)
+		StatementListGenerate(state.afterAll->scope->statementList);
 	fputs("}\n", outputFile);
 }
 

@@ -59,31 +59,42 @@ ModuleListNode * ModuleListGrammarAction(ModuleListNode * moduleList, ModuleNode
 }
 
 static bool cmpStr(void * a, void * b) {
-	return strcmp((char*) a, (char *) b) == 0;
+	return strcmp((char*) a, (char *) b);
 }
 
 ModuleNode * ModuleGrammarAction(char * name, ModuleType type, ScopeNode * scope) {
 	ModuleNode * module = gcCalloc(sizeof(*module));
 	module->name = name;
 	module->type = type;
-	if (module->type == MODULE_AFTER_ALL && state.afterAll != NULL) {
-		LogError("%d: Ya se declaró un módulo 'after all'.", yylineno);
-		addError("Ya se declaró un módulo 'after all'.");
-		state.succeed = false;
-	} else if (module->type == MODULE_BEFORE_ALL && state.beforeAll != NULL) {
-		LogError("%d: Ya se declaró un módulo 'before all'.", yylineno);
-		addError("Ya se declaró un módulo 'before all'.");
-		state.succeed = false;
+	if (module->type == MODULE_AFTER_ALL) {
+		if (state.afterAll != NULL) {
+			LogError("%d: Ya se declaró un módulo 'after all'.", yylineno);
+			addError("Ya se declaró un módulo 'after all'.");
+			state.succeed = false;
+		} else {
+			state.afterAll = module;
+
+		}
+	} else if (module->type == MODULE_BEFORE_ALL) {
+		if (state.beforeAll != NULL) {
+			LogError("%d: Ya se declaró un módulo 'before all'.", yylineno);
+			addError("Ya se declaró un módulo 'before all'.");
+			state.succeed = false;
+		} else {
+			LogDebug("before all asignado!!!");
+			state.beforeAll = module;
+		}
 	}
 	module->scope = scope;
-	if (name != NULL && module->type == MODULE_CUSTOM) {
+	if (name != NULL) {
 		bool isPresent = contains(state.modules, module->name, cmpStr);
 		if (isPresent) {
 			LogError("%d: El módulo '%s' ya fue declarado.", yylineno, module->name);
 			addError("El módulo ya fue declarado.");
 			state.succeed = false;
+		} else {
+			appendElement(state.modules, module->name);
 		}
-		appendElement(state.modules, module->name);
 	}
 	return module;
 }

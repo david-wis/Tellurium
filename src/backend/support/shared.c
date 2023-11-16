@@ -1,4 +1,7 @@
 #include "shared.h"
+#include "logger.h"
+#include <string.h>
+#include <stdlib.h>
 #define BUFFSIZE 1024
 
 void * gcCalloc(size_t size) {

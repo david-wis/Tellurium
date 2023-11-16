@@ -102,6 +102,10 @@ function telluriumAssertNotEquals(expected, actual) {
     assert.notEqual(expected, actual, `expected not equals: ${expected}`);
 }
 
+async function sleep(timeout) {
+    await driver.sleep(timeout);
+}
+
 (async function main() {
   try {
     const tellurium_suite_state = {
@@ -119,9 +123,5 @@ function telluriumAssertNotEquals(expected, actual) {
 })();
 
 async function suite(tellurium_suite_state) {
-    // Before all (TODO)
-    await navigate('http://pawserver.it.itba.edu.ar/paw-2023b-12/search'); 
-
-    // Siempre lo ultimo de beforeAll es setear estado interno
 
 

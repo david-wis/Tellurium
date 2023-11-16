@@ -10,7 +10,7 @@ typedef struct LinkedListCDT {
 } LinkedListCDT;
 
 LinkedListADT createLinkedListADT() {
-	LinkedListADT list = (LinkedListADT) allocMemory(sizeof(LinkedListCDT));
+	LinkedListADT list = (LinkedListADT) malloc(sizeof(LinkedListCDT));
 	list->len = 0;
 	list->first = NULL;
 	list->last = NULL;
@@ -21,7 +21,7 @@ LinkedListADT createLinkedListADT() {
 Node *appendElement(LinkedListADT list, void *data) {
 	if (list == NULL)
 		return NULL;
-	Node *newNode = (Node *) allocMemory(sizeof(Node));
+	Node *newNode = (Node *) malloc(sizeof(Node));
 	newNode->data = data;
 	return appendNode(list, newNode);
 }

@@ -69,6 +69,8 @@ add_executable(Compiler
 	src/backend/code-generation/function-generators.c
 	# src/backend/domain-specific/calculator.c
 	src/backend/support/logger.c
+	src/backend/support/shared.c
+	src/backend/support/linkedListADT.c
 	src/frontend/lexical-analysis/flex-actions.c
 	src/frontend/lexical-analysis/flex-scanner.c
 	src/frontend/syntactic-analysis/general-actions.c

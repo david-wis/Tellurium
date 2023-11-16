@@ -1,6 +1,8 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
+#include <stdbool.h>
+
 typedef struct LinkedListCDT *LinkedListADT;
 
 typedef struct Node {
