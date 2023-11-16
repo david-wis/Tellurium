@@ -2,6 +2,7 @@
 #define GENERATOR_HEADER
 
 #include "../semantic-analysis/abstract-syntax-tree.h"
+#include "../support/shared.h"
 
 void generate(Program * program, const char * inputFile);
 

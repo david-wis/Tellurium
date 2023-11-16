@@ -1,6 +1,6 @@
 #include "bison-actions.h"
 FunctionNode * FunctionGrammarAction(bool async, char * name, ParameterDefinitionNode * parameters, ScopeNode * scope) {
-    FunctionNode * node = calloc(1, sizeof(*node));
+    FunctionNode * node = gcCalloc(sizeof(*node));
     node->async = async;
     node->name = name;
     node->parameters = parameters;
@@ -9,14 +9,14 @@ FunctionNode * FunctionGrammarAction(bool async, char * name, ParameterDefinitio
 }
 
 ParameterDefinitionNode * ParameterDefinitionGrammarAction(ParameterDefinitionNode * list, char * name) {
-    ParameterDefinitionNode * node = calloc(1, sizeof(*node));
+    ParameterDefinitionNode * node = gcCalloc(sizeof(*node));
     node->next = list;
     node->name = name;
     return node;
 }
 
 LambdaNode * LambdaGrammarAction(ParameterDefinitionNode * parameters, ScopeNode * scope, bool isArrow, bool async) {
-    LambdaNode * node = calloc(1, sizeof(*node));
+    LambdaNode * node = gcCalloc(sizeof(*node));
     node->parameters = parameters;
     node->scope = scope;
     node->isArrow = isArrow;

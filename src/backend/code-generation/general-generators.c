@@ -2,6 +2,7 @@
 #include "generator.h"
 #include <stdlib.h>
 #include <stdio.h>
+
 extern FILE * outputFile;
 
 static void AssertionGenerateAux(Assertion * assertion);
@@ -38,10 +39,13 @@ void ModuleListGenerate(ModuleListNode * moduleList) {
 
 void ModuleGenerate(ModuleNode * module){
 	LogDebug("\tModuleGenerate\n");
+
+
 	fputs("tellurium_suite_state.success = true;\n", outputFile);
-	if (module->name != NULL)
+	if (module->name != NULL) {
 		fprintf(outputFile, "tellurium_suite_state.name = \"%s\";\n", module->name);
-	else 
+	}
+	else  
 		fprintf(outputFile, "tellurium_suite_state.name = \"Tellurium test module\";\n"); // TODO improve
 	fputs("tellurium_suite_state.count++;\n", outputFile);
 	fputs("try ", outputFile);	

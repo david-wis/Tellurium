@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include "linkedListADT.h"
 #include "../semantic-analysis/abstract-syntax-tree.h"
 
 // Descriptor del archivo de entrada que utiliza Bison.
@@ -42,14 +43,17 @@ typedef struct {
 	// El nodo raíz del AST (se usará cuando se implemente el backend).
 	Program * program;
 
-	// Agregar lo que sea necesario para el compilador.
-	// Agregar una pila para manipular scopes.
-	// Agregar una tabla de símbolos.
-	// ...
-
+	ModuleNode * beforeAll;
+	ModuleNode * afterAll;
+	LinkedListADT elementsToFree; 
+	LinkedListADT modules; 
+	LinkedListADT errorMessages;
 } CompilerState;
 
 // El estado se define e inicializa en el archivo "main.c".
 extern CompilerState state;
+
+void * gcCalloc(size_t size);
+void addError(const char * msg);
 
 #endif

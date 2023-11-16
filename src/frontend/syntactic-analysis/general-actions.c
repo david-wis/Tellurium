@@ -32,58 +32,84 @@ Program * ProgramGrammarAction(ProgramUnion p, ProgramType type) {
 	* cuyo campo "succeed" indica si la compilación fue o no exitosa, la cual
 	* es utilizada en la función "main".
 	*/
-	Program * program = calloc(1, sizeof(*program));
+	Program * program = gcCalloc(sizeof(*program));
 	program->program = p;
 	program->type = type;
-	state.succeed = true;
+	if (!isEmpty(state.errorMessages)) {
+		state.succeed = false;
+	} else {
+		state.succeed = true;
+	}
 	state.program = program;
 	return program;
 }
 
 SuiteNode * SuiteGrammarAction(char * name, ModuleListNode * moduleList) {
-	SuiteNode * suite = calloc(1, sizeof(*suite));
+	SuiteNode * suite = gcCalloc(sizeof(*suite));
 	suite->name = name;
 	suite->moduleList = moduleList;
 	return suite;
 }
 
 ModuleListNode * ModuleListGrammarAction(ModuleListNode * moduleList, ModuleNode * module) {
-	ModuleListNode * node = calloc(1, sizeof(*node));
+	ModuleListNode * node = gcCalloc(sizeof(*node));
 	node->moduleList = moduleList;
 	node->module = module;
 	return node;
 }
 
+static bool cmpStr(void * a, void * b) {
+	return strcmp((char*) a, (char *) b) == 0;
+}
+
 ModuleNode * ModuleGrammarAction(char * name, ModuleType type, ScopeNode * scope) {
-	ModuleNode * module = calloc(1, sizeof(*module));
+	ModuleNode * module = gcCalloc(sizeof(*module));
 	module->name = name;
 	module->type = type;
+	if (module->type == MODULE_AFTER_ALL && state.afterAll != NULL) {
+		LogError("%d: Ya se declaró un módulo 'after all'.", yylineno);
+		addError("Ya se declaró un módulo 'after all'.");
+		state.succeed = false;
+	} else if (module->type == MODULE_BEFORE_ALL && state.beforeAll != NULL) {
+		LogError("%d: Ya se declaró un módulo 'before all'.", yylineno);
+		addError("Ya se declaró un módulo 'before all'.");
+		state.succeed = false;
+	}
 	module->scope = scope;
+	if (name != NULL && module->type == MODULE_CUSTOM) {
+		bool isPresent = contains(state.modules, module->name, cmpStr);
+		if (isPresent) {
+			LogError("%d: El módulo '%s' ya fue declarado.", yylineno, module->name);
+			addError("El módulo ya fue declarado.");
+			state.succeed = false;
+		}
+		appendElement(state.modules, module->name);
+	}
 	return module;
 }
 
 ScopeNode * ScopeGrammarAction(StatementListNode * statementList) {
-	ScopeNode * scope = calloc(1, sizeof(*scope));
+	ScopeNode * scope = gcCalloc(sizeof(*scope));
 	scope->statementList = statementList;
 	return scope;
 }
 
 StatementListNode * StatementListGrammarAction(StatementListNode * statementList, StatementNode * statement) {
-	StatementListNode * node = calloc(1, sizeof(*node));
+	StatementListNode * node = gcCalloc(sizeof(*node));
 	node->statementList = statementList;
 	node->statement = statement;
 	return node;
 }
 
 StatementNode * StatementGrammarAction(StatementUnion statementUnion, StatementType type) {
-	StatementNode * node = calloc(1, sizeof(*node));
+	StatementNode * node = gcCalloc(sizeof(*node));
 	node->statementUnion = statementUnion;
 	node->type = type;
 	return node;
 }
 
 StatementNode * DeclarationStatementGrammarAction(variable_scope_t type, char * name, char * op, ExpressionNode * expression) {
-	Declaration * declaration = calloc(1, sizeof(*declaration));
+	Declaration * declaration = gcCalloc(sizeof(*declaration));
 	declaration->type = type;
 	declaration->name = name;
 	declaration->op = op;
@@ -92,7 +118,7 @@ StatementNode * DeclarationStatementGrammarAction(variable_scope_t type, char * 
 }
 
 StatementNode * AssignmentStatementGrammarAction(VariableNode * variable, char * op, ExpressionNode * expression) {
-	Assignment * assignment = calloc(1, sizeof(*assignment));
+	Assignment * assignment = gcCalloc(sizeof(*assignment));
 	assignment->variable = variable;
 	assignment->op = op;
 	assignment->expression = expression;
@@ -100,7 +126,7 @@ StatementNode * AssignmentStatementGrammarAction(VariableNode * variable, char *
 }
 
 StatementNode * AssertionStatementGrammarAction(assertion_t type, ExpressionNode * expression, ExpressionNode * expected) {
-	Assertion * assertion = calloc(1, sizeof(*assertion));
+	Assertion * assertion = gcCalloc(sizeof(*assertion));
 	assertion->type = type;
 	assertion->expression = expression;
 	assertion->expected = expected;

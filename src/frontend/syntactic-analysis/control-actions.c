@@ -1,14 +1,14 @@
 #include "bison-actions.h"
 
 ControlNode * ControlGrammarAction(ControlUnion control, ControlType type){
-    ControlNode * node = calloc(1, sizeof(*node));
+    ControlNode * node = gcCalloc(sizeof(*node));
     node->control = control;
     node->type = type;
     return node;
 }
 
 ControlNode * ForControlGrammarAction(ForExpressionNode * forExpressionStart, ForExpressionNode * forExpressionCondition, ForExpressionNode * forExpressionNext, ScopeNode * scope){
-    ForControl * forControl = calloc(1, sizeof(*forControl));
+    ForControl * forControl = gcCalloc(sizeof(*forControl));
     forControl->forExpressionStart = forExpressionStart;
     forControl->forExpressionCondition = forExpressionCondition;
     forControl->forExpressionNext = forExpressionNext;
@@ -17,14 +17,14 @@ ControlNode * ForControlGrammarAction(ForExpressionNode * forExpressionStart, Fo
 }
 
 ControlNode * WhileControlGrammarAction(ExpressionNode * condition, ScopeNode * scope){
-    WhileControl * whileControl = calloc(1, sizeof(*whileControl));
+    WhileControl * whileControl = gcCalloc(sizeof(*whileControl));
     whileControl->condition = condition;
     whileControl->scope = scope;
     return ControlGrammarAction((ControlUnion) { .whileControl = whileControl }, WHILE_CONTROL);
 }
 
 IfControlNode * IfControlGrammarAction(ExpressionNode * condition, ScopeNode * scope, ElseControlNode * elseControl){
-    IfControlNode * node = calloc(1, sizeof(*node));
+    IfControlNode * node = gcCalloc(sizeof(*node));
     node->condition = condition;
     node->scope = scope;
     node->elseControl = elseControl;
@@ -32,21 +32,21 @@ IfControlNode * IfControlGrammarAction(ExpressionNode * condition, ScopeNode * s
 }
 
 ElseControlNode * ElseControlGrammarAction(ElseControlUnion data, bool isScope){
-    ElseControlNode * node = calloc(1, sizeof(*node));
+    ElseControlNode * node = gcCalloc(sizeof(*node));
     node->data = data;
     node->isScope = isScope;
     return node;
 }
 
 ForExpressionNode * ForExpressionGrammarAction(ForExpressionUnion expression, ForExpressionType type){
-    ForExpressionNode * node = calloc(1, sizeof(*node));
+    ForExpressionNode * node = gcCalloc(sizeof(*node));
     node->expression = expression;
     node->type = type;
     return node;
 }
 
 ForExpressionNode * DeclarationForExpressionGrammarAction(variable_scope_t type, char * name, char * op, ExpressionNode * expression){
-    Declaration * declaration = calloc(1, sizeof(*declaration));
+    Declaration * declaration = gcCalloc(sizeof(*declaration));
     declaration->type = type;
     declaration->name = name;
     declaration->op = op;
@@ -55,7 +55,7 @@ ForExpressionNode * DeclarationForExpressionGrammarAction(variable_scope_t type,
 }
 
 ForExpressionNode * AssignmentForExpressionGrammarAction(VariableNode * variable, char * op, ExpressionNode * expression){
-    Assignment * assignment = calloc(1, sizeof(*assignment));
+    Assignment * assignment = gcCalloc(sizeof(*assignment));
     assignment->variable = variable;
     assignment->op = op;
     assignment->expression = expression;
@@ -63,7 +63,7 @@ ForExpressionNode * AssignmentForExpressionGrammarAction(VariableNode * variable
 }
 
 TryControlNode * TryControlGrammarAction(ScopeNode * tryScope, RetryControlNode * retryControl, char * exceptionName, ScopeNode * catchScope, ScopeNode * finallyScope){
-    TryControlNode * node = calloc(1, sizeof(*node));
+    TryControlNode * node = gcCalloc(sizeof(*node));
     node->tryScope = tryScope;
     node->retryControl = retryControl;
     node->exceptionName = exceptionName;
@@ -73,7 +73,7 @@ TryControlNode * TryControlGrammarAction(ScopeNode * tryScope, RetryControlNode 
 }
 
 RetryControlNode * RetryControlGrammarAction(ScopeNode * retryScope, unsigned retryCount, ExceptionSetNode * exceptionSet){
-    RetryControlNode * node = calloc(1, sizeof(*node));
+    RetryControlNode * node = gcCalloc(sizeof(*node));
     node->retryScope = retryScope;
     node->retryCount = retryCount;
     node->exceptionSet = exceptionSet;
@@ -81,7 +81,7 @@ RetryControlNode * RetryControlGrammarAction(ScopeNode * retryScope, unsigned re
 }
 
 ExceptionSetNode * ExceptionSetGrammarAction(VariableNode * variable, ExceptionSetNode * next){
-    ExceptionSetNode * node = calloc(1, sizeof(*node));
+    ExceptionSetNode * node = gcCalloc(sizeof(*node));
     node->exception = variable;
     node->next = next;
     return node;
