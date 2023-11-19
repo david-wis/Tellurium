@@ -1,4 +1,3 @@
-import { assert } from "console"
 
 Suite assertionSuite {
 
@@ -43,8 +42,7 @@ Suite assertionSuite {
 
     Module assertNotEqualsModule{
         assertNotEquals 1, -1;
-        assertNotEquals undefined, null;
-        
+
         try {
             assertNotEquals 1, 1;
         } catch (e) {

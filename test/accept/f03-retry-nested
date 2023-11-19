@@ -1,0 +1,27 @@
+Suite retrySuiteTest {
+    Module nestedRetry {
+        var n = -4;
+        var arr;
+        var retried_failed = false;
+        try {
+            
+            try {
+                arr = Array((n+=1));
+            } retry(RangeError, 3) {
+                console.log("failed attempts");
+                retried_failed = true;
+            } catch(e) {
+            }
+            console.log("failed first attempt");
+            assertTrue retried_failed;
+            retried_failed = false;
+            arr = Array((n+=1));
+        } retry(RangeError) {
+            console.log("failed second attempt", n);
+            assertTrue false;
+        } catch(e) {
+            assertTrue false;
+        }
+        console.log("yay we did it!");
+    }
+}
