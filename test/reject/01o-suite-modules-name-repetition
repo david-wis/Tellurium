@@ -5,20 +5,7 @@ Suite s{
         
     }
 
-
-    AfterAll {
-
-    }
-
     Module m1 {
         
-    }
-
-    AfterAll {
-        
-    }
-
-    BeforeAll {
-
     }
 }
