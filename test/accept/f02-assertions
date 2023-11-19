@@ -1,0 +1,57 @@
+import { assert } from "console"
+
+Suite assertionSuite {
+
+    Module assertTrueModule{
+        assertTrue true;
+        assertTrue 1;
+
+        try {
+            assertTrue false;
+        } catch (e) {
+            return;
+        }
+        console.log("should not be here");
+        assertTrue catched;
+    }
+
+    Module assertFalseModule{
+        assertFalse false;
+        assertFalse 0;
+        assertFalse "";
+        assertFalse [];
+
+        try {
+            assertFalse true;
+        } catch (e) {
+            return;
+        }
+        console.log("should not be here");
+        assertTrue false;
+    }
+
+    Module assertEqualsModule{
+        assertEquals 1, 1;
+        try {
+            assertEquals 1, -1;
+        } catch (e) {
+            return;
+        }
+        console.log("should not be here");
+        assertTrue false;
+    }
+
+    Module assertNotEqualsModule{
+        assertNotEquals 1, -1;
+        assertNotEquals undefined, null;
+        
+        try {
+            assertNotEquals 1, 1;
+        } catch (e) {
+            return;
+        }
+        console.log("should not be here");
+        assertTrue false;
+    }
+
+}

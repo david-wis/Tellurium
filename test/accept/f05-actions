@@ -1,0 +1,41 @@
+Suite actionSuite {
+
+    BeforeAll {
+        browser_start("firefox");
+        navigate("http://pawserver.it.itba.edu.ar/paw-2023b-12/search");
+    }
+
+    AfterAll {
+        browser_quit();
+    }
+
+    Module basicStringModule {
+        var searchinput = $("//input[@id='searchNavInput']");
+        searchinput.waitUntil(Tellurium.enabled);
+        searchinput.sendKeys("test");
+        value = await searchinput.getAttribute("value");
+        console.log("search input value: ",value);
+        assertEquals value, "test";
+    }
+
+    Module keyTextnModule {
+        var searchinput = $("//input[@id='searchNavInput']");
+        searchinput.waitUntil(Tellurium.enabled);
+        searchinput.sendKeys(<|"te" +SHIFT "S" -SHIFT "t" |>);
+        await sleep(1000);
+        value = await searchinput.getAttribute("value");
+        console.log("search input value: ",value);
+        assertEquals value, "teSt";
+    }
+
+    Module keyActionsModule {
+        var searchinput = $("//input[@id='searchNavInput']");
+        searchinput.waitUntil(Tellurium.enabled);
+        searchinput.sendKeys(<|"test" +CONTROL LEFT -CONTROL DELETE "r"|>);
+        await sleep(1000);
+        value = await searchinput.getAttribute("value");
+        console.log("search input value: ",value);
+        assertEquals value, "rest";
+    }
+
+}

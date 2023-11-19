@@ -39,3 +39,9 @@ a != b;
 !a;
 
 !a == await !!!b;
+
+
+var a1;
+var a_1;
+var a1;
+var _a1;

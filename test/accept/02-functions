@@ -16,6 +16,10 @@ function b(a, b, c, d,e,f, g,h) {
 
 function c(){}
 
+function e() {
+    return;
+}
+
 function hola() {
     function nested() {
         return 1;

@@ -1,0 +1,13 @@
+Suite moduleReturnTesting {
+    Module {
+        console.log("Hello World");
+    }
+
+    Module {
+        console.log("Been there");
+        assertTrue true;
+        return 0;
+        assertTrue false;
+        console.error("Should not be here");
+    }
+}

@@ -1,0 +1,58 @@
+Suite retrySuiteTest {
+    Module simpleRetry {
+        var n = -1;
+        var arr;
+        try {
+            arr = Array((n+=1));
+        } retry(RangeError) {
+            console.log("failed second attempt");
+            assertTrue false;
+        } catch(e) {
+            assertTrue false;
+        }
+        console.log("yay we did it!");
+    }
+
+    Module nRetry {
+        var n = -5;
+        var arr;
+        try {
+            arr = Array((n+=1));
+        } retry(RangeError, 5) {
+            console.log("failed 6th attempt");
+            assertTrue false;
+        } catch(e) {
+            assertTrue false;
+        }
+        console.log("yay we did it!");
+    }
+
+
+    Module excededRetry {
+        var n = -9;
+        var arr;
+        try {
+            arr = Array((n+=1));
+        } retry(RangeError, 5) {
+            console.log("failed 6th attempt");
+            return;
+        } catch(e) {
+            assertTrue false;
+        }
+        assertTrue false;
+    }
+
+    Module catchRetry {
+        var n = -9;
+        var arr;
+        try {
+            arr = Array((n+=1));
+        } retry(RangeError, 5) {
+            console.log("failed 6th attempt");
+            assertTrue false;
+        } catch(e) {
+            return;
+        }
+        assertTrue false;
+    }
+}

@@ -1,0 +1,23 @@
+Suite beforeAllAccessSuite {
+
+    BeforeAll {
+        var secret = "1234";
+        var mySecret1;
+        var mySecret2;
+    }
+
+    Module m1 {
+        mySecret1 = 1;
+        assertEquals secret,"1234";
+        assertEquals mySecret1, 1;
+        assertTrue mySecret2 == undefined;
+    }
+
+    Module m2 {
+        mySecret2 = 2;
+        assertEquals secret, "1234";
+        assertEquals mySecret2, 2;
+        assertTrue mySecret1 == undefined;
+    }
+
+}
