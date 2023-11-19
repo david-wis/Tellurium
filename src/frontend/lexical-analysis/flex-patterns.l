@@ -21,7 +21,7 @@ string          \"([^\\\"]|\\.)*\"
 digit			      [0-9]
 endline			    [(\r)?\n]
 whitespace		  [ \f\n\r\t\v]
-char            [a-zA-Z]
+char            [a-zA-Z_]
 name            {char}({char}|{digit})*
 number           ({digit}*[.])?{digit}+
 single_line_comment  "//".*

@@ -7,6 +7,7 @@ extern FILE * outputFile;
 
 void ExpressionGenerate(ExpressionNode * expression) {
     LogDebug("\tExpressionGenerate\n");
+    if(expression == NULL) return;
     if(expression->isOperation) OperationGenerate(expression->expression.operation);
     else LambdaGenerate(expression->expression.lambda);
 }

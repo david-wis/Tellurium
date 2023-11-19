@@ -41,9 +41,12 @@ void ModuleGenerate(ModuleNode * module){
 	LogDebug("\tModuleGenerate\n");
 	if (module->type == MODULE_AFTER_ALL || module->type == MODULE_BEFORE_ALL) return;
 
-	fputs("{\n", outputFile);
-	if (state.beforeAll != NULL)
+	fputs("await (async function() {\n", outputFile);
+	fputs("\t//starting BeforeAll\n", outputFile);
+	if (state.beforeAll != NULL) {
 		StatementListGenerate(state.beforeAll->scope->statementList);
+	}
+	fputs("\t//ending BeforeAll\n", outputFile);
 
 	fputs("tellurium_suite_state.success = true;\n", outputFile);
 	if (module->name != NULL) {
@@ -52,20 +55,24 @@ void ModuleGenerate(ModuleNode * module){
 	else  
 		fprintf(outputFile, "tellurium_suite_state.name = \"Tellurium test module\";\n"); // TODO improve
 	fputs("tellurium_suite_state.count++;\n", outputFile);
+	fputs("//starting module\n", outputFile);
 	fputs("try ", outputFile);	
 	ScopeGenerate(module->scope);
+	fputs("//ending module\n", outputFile);
 	fputs("catch (error) {\n", outputFile);
 	fputs("\tconsole.error(`Module ${tellurium_suite_state.name} failed ${error}`)\n", outputFile);
 	fputs("\ttellurium_suite_state.success = false;\n", outputFile);
 	fputs("} finally {\n", outputFile);
 	fputs("\tif (tellurium_suite_state.success) { tellurium_suite_state.passedCount++;\n", outputFile);
 	fputs("\tconsole.info(`Module ${tellurium_suite_state.name} passed`);\n}\n", outputFile);
-	fputs("}\n", outputFile);
-
-
+	fputs("\t//starting AfterAll\n", outputFile);
 	if (state.afterAll != NULL)
 		StatementListGenerate(state.afterAll->scope->statementList);
+	fputs("\t//starting AfterAll\n", outputFile);
 	fputs("}\n", outputFile);
+
+
+	fputs("})();\n", outputFile);
 }
 
 void ScopeGenerate(ScopeNode * scope) {
@@ -107,7 +114,9 @@ void StatementGenerate(StatementNode * statement) {
 				break;
 			case STATEMENT_RETURN:
 				fputs("return ", outputFile);
-				ExpressionGenerate(statement->statementUnion.expression);
+				if (statement->statementUnion.expression) {
+					ExpressionGenerate(statement->statementUnion.expression);
+				}
 				break;
 			default:
 				break;
@@ -166,7 +175,7 @@ static void AssertionGenerateAux(Assertion * assertion)  {
 			fputs(", true)", outputFile);
 			break;
 		case NOT_EQUAL:
-			fputs("telluriumAssertNotEquals(expected, actual)", outputFile);
+			fputs("telluriumAssertNotEquals(", outputFile);
 			ExpressionGenerate(assertion->expected);
 			fputs(", ", outputFile);
 			ExpressionGenerate(assertion->expression);

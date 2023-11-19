@@ -15,7 +15,7 @@ void * gcCalloc(size_t size) {
 
 void addError(const char * msg) {
     char buffer[BUFFSIZE] = {0};
-    sprintf(buffer, "%d: %s", yylineno, msg);
+    sprintf(buffer, "%s", msg);
     char * message = gcCalloc(strlen(buffer) + 1);
     strcpy(message, buffer);
     appendElement(state.errorMessages, message);

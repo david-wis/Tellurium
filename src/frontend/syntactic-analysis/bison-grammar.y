@@ -249,7 +249,7 @@ try: TRY scope retry CATCH OPEN_PARENTHESIS NAME CLOSE_PARENTHESIS scope						{ 
 
 retry: %empty																					{ $$ = NULL; } // retry -> %empty
 	| RETRY OPEN_PARENTHESIS exceptionSet COMMA INTEGER CLOSE_PARENTHESIS scope					{ $$ = RetryControlGrammarAction($7, $5, $3); } // retry -> retry ( exceptionSet , INTEGER ) scope
-	| RETRY OPEN_PARENTHESIS exceptionSet CLOSE_PARENTHESIS scope								{ $$ = RetryControlGrammarAction($5, 0, $3); } // retry -> retry ( exceptionSet ) scope
+	| RETRY OPEN_PARENTHESIS exceptionSet CLOSE_PARENTHESIS scope								{ $$ = RetryControlGrammarAction($5, 1, $3); } // retry -> retry ( exceptionSet ) scope
 	; 
 
 exceptionSet: variable																{ $$ = ExceptionSetGrammarAction($1, NULL); } // exceptionSet -> NAME

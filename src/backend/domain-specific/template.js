@@ -1,17 +1,25 @@
 const Selenium = require('selenium-webdriver');
 const assert = require('node:assert');
-const driver = new Selenium.Builder().forBrowser('firefox').build();
+var driver;
 const TelluriumExceptions = require('selenium-webdriver/lib/error');
 var suiteName = 'Tellurium Test Suite';
+
+function browser_start(browser) {
+    driver = new Selenium.Builder().forBrowser(browser).build();
+}
+
+async function browser_quit() {
+    await driver.close();
+}
 
 async function navigate(url) {
     await driver.get(url);
 }
 
 const Tellurium = {
-  visible: Selenium.until.elementIsVisible,
-  enabled: Selenium.until.elementIsEnabled,
-  disabled: Selenium.until.elementIsDisabled
+    visible: Selenium.until.elementIsVisible,
+    enabled: Selenium.until.elementIsEnabled,
+    disabled: Selenium.until.elementIsDisabled
 }
 
 function newSequence(actions) {
@@ -22,7 +30,7 @@ function newSequence(actions) {
         },
         multiply: (n) => {
             let result = [];
-            for (let i=0; i<n; i++) {
+            for (let i = 0; i < n; i++) {
                 result.concat(actions);
             }
             return newSequence(result);
@@ -34,22 +42,27 @@ function seleniumElementWrapper(element) {
     return {
         element,
         sendKeys: async (sequence) => {
-            let actions = driver.actions();     
-            for (const a of sequence.actions) {
-                switch(a.type) {
-                    case "keyDown":
-                        actions.keyDown(a.value);
-                        break;
-                    case "keyUp":
-                        actions.keyUp(a.value);
-                        break;
-                    case "press":
-                        actions.sendKeys(element, a.value);
-                        break;
+            if (typeof sequence === "string") {
+                await element.sendKeys(sequence);
+            } else if(typeof sequence === "object"){
+                let actions = driver.actions().sendKeys(element, "");
+                for (const a of sequence.actions) {
+                    switch (a.type) {
+                        case "keyDown":
+                            actions.keyDown(a.value);
+                            break;
+                        case "keyUp":
+                            actions.keyUp(a.value);
+                            break;
+                        case "press":
+                            actions.sendKeys(a.value);
+                            break;
+                    }
                 }
+                await actions.perform();
+            } else {
+                throw new Error("sendKeys: sequence must be string or object");
             }
-            await actions.perform();
-      
         },
         click: async () => {
             await element.click();
@@ -76,7 +89,7 @@ function seleniumElementWrapper(element) {
             return await element.getTagName();
         },
         waitUntil: async (condition, timeout) => {
-          await driver.wait(condition(element), timeout);
+            await driver.wait(condition(element), timeout);
         }
     }
 }
@@ -93,7 +106,7 @@ async function findByXPath(path) {
 
 function telluriumAssert(expected, actual, strict) {
     if (strict)
-        assert.strictEquals(expected, actual, `expected: ${expected}, actual: ${actual}`);
+        assert.strictEqual(expected, actual, `expected: ${expected}, actual: ${actual}`);
     else
         assert.equal(expected, actual, `expected: ${expected}, actual: ${actual}`);
 }
@@ -107,19 +120,18 @@ async function sleep(timeout) {
 }
 
 (async function main() {
-  try {
-    const tellurium_suite_state = {
-      name: 'Tellurium Test Module',
-      count: 0,
-      passedCount: 0,
-      success: true
+    try {
+        const tellurium_suite_state = {
+            name: 'Tellurium Test Module',
+            count: 0,
+            passedCount: 0,
+            success: true
+        }
+        await suite(tellurium_suite_state);
+        console.info(`Test suite ${suiteName} finished with ${tellurium_suite_state.passedCount} of ${tellurium_suite_state.count} passed`);
+    } finally {
+
     }
-    await suite(tellurium_suite_state);
-    console.info(`Test suite ${suiteName} finished with ${tellurium_suite_state.passedCount} of ${tellurium_suite_state.count} passed`);
-    await driver.sleep(5000);
-  } finally {
-    await driver.quit();
-  }
 })();
 
 async function suite(tellurium_suite_state) {
