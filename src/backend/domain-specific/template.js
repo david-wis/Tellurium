@@ -120,18 +120,14 @@ async function sleep(timeout) {
 }
 
 (async function main() {
-    try {
-        const tellurium_suite_state = {
-            name: 'Tellurium Test Module',
-            count: 0,
-            passedCount: 0,
-            success: true
-        }
-        await suite(tellurium_suite_state);
-        console.info(`Test suite ${suiteName} finished with ${tellurium_suite_state.passedCount} of ${tellurium_suite_state.count} passed`);
-    } finally {
-
+    const tellurium_suite_state = {
+        name: 'Tellurium Test Module',
+        count: 0,
+        passedCount: 0,
+        success: true
     }
+    await suite(tellurium_suite_state);
+    console.info(`Test suite ${suiteName} finished with ${tellurium_suite_state.passedCount} of ${tellurium_suite_state.count} passed`);
 })();
 
 async function suite(tellurium_suite_state) {
