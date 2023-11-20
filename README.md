@@ -1,7 +1,7 @@
 # Tellurium 
 
 Domain Specific Language (DSL) para la creación de Suites y Test Cases de pruebas de software. 
-Su sintaxis está inspirada en JavaScript, y el backend utilizará el framework [Selenium](https://www.selenium.dev/).
+Su sintaxis está inspirada en JavaScript, y el backend utiliza el framework [Selenium](https://www.selenium.dev/).
 
 ## Requerimientos
 
@@ -36,30 +36,24 @@ Luego se deberá abrir la solución generada `bin\Compiler.sln` con el IDE _Micr
 
 Para compilar un programa, primero cree un archivo vacío denominado `program` (o el nombre que desee).
 
-Luego, ejecute el compilador desde el directorio raíz del proyecto, o desde cualquier otro lugar indicando el path hacia el script `start.sh` y pasando por parámetro el path hacia el programa a compilar:
+Luego, ejecute el compilador desde el directorio raíz del proyecto, o desde cualquier otro lugar indicando el path hacia el script `start.sh` y pasando por parámetro el path hacia el programa a compilar y el directorio donde desea que se generen los archivos.
 
+Los archivos generados deben ser ejecutados dentro de un proyecto que tenga el paquete de npm selenium-webdriver instalado
 ```bash
-user@machine:path/ $ script/start.sh program
-```
-
-En Windows:
-
-```bash
-user@machine:path/ $ script\start.bat program
+user@machine:path/ $ ./script/build.sh
+user@machine:path/ $ ./script/start.sh program ./output
+# Se instala el paquete de selenium-webdriver automáticamente...
+user@machine:path/ $ cd output
+user@machine:path/ $ node program
 ```
 
 ## Testing
 
-En Linux:
-
 ```bash
-user@machine:path/ $ script/test.sh
-```
-
-En Windows:
-
-```bash
-user@machine:path/ $ script\test.bat
+user@machine:path/ $ ./script/test.sh
+user@machine:path/ $ cd output
+user@machine:path/ $ npm install selenium-webdriver
+user@machine:path/ $ node {nombre del test}
 ```
 
 Si desea agregar nuevos casos de uso, deberá crear un archivo por cada uno, que contenga el programa a testear dentro de las carpetas `test/accept` o `test/reject` según corresponda (es decir, si el mismo debe ser aceptado o rechazado por el compilador).
