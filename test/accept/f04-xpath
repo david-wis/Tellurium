@@ -1,7 +1,7 @@
 Suite xpathSuite {
 
     BeforeAll {
-        browserStartt("firefox");
+        browserStart("firefox");
         navigate("http://pawserver.it.itba.edu.ar/paw-2023b-12/search");
     }
 
@@ -13,8 +13,8 @@ Suite xpathSuite {
 
     Module singleXpathModule {
         var searchinput = $("//input[@id='searchNavInput']");
-        searchinput.waitUntil(Tellurium.visible);
-        searchinput.sendKeys(<|"test"|>);
+        await searchinput.waitUntil(Tellurium.visible, 2);
+        await searchinput.sendKeys(<|"test"|>);
         value = await searchinput.getAttribute("value");
         console.log("search input value: ",value);
         assertEquals value, "test";
@@ -33,7 +33,7 @@ Suite xpathSuite {
 
     Module manyXpathModule {
         var searchinput = $("//input[@id='searchNavInput']");
-        await searchinput.waitUntil(Tellurium.visible);
+        await searchinput.waitUntil(Tellurium.visible, 2);
         var xpath = "//input";
         var inputs = #(xpath);
         

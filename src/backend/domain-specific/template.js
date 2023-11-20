@@ -127,7 +127,9 @@ async function sleep(timeout) {
         success: true
     }
     await suite(tellurium_suite_state);
-    console.info(`Test suite ${suiteName} finished with ${tellurium_suite_state.passedCount} of ${tellurium_suite_state.count} passed`);
+    if (tellurium_suite_state.count !== 0) {
+        console.info(`Test suite ${suiteName} finished with ${tellurium_suite_state.passedCount} of ${tellurium_suite_state.count} passed`);
+    }
 })();
 
 async function suite(tellurium_suite_state) {

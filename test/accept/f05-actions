@@ -1,7 +1,7 @@
 Suite actionSuite {
 
     BeforeAll {
-        browserStartt("firefox");
+        browserStart("chrome");
         navigate("http://pawserver.it.itba.edu.ar/paw-2023b-12/search");
     }
 
@@ -11,8 +11,8 @@ Suite actionSuite {
 
     Module basicStringModule {
         var searchinput = $("//input[@id='searchNavInput']");
-        searchinput.waitUntil(Tellurium.enabled);
-        searchinput.sendKeys("test");
+        await searchinput.waitUntil(Tellurium.enabled, 2);
+        await searchinput.sendKeys("test");
         value = await searchinput.getAttribute("value");
         console.log("search input value: ",value);
         assertEquals value, "test";
@@ -20,8 +20,8 @@ Suite actionSuite {
 
     Module keyTextnModule {
         var searchinput = $("//input[@id='searchNavInput']");
-        searchinput.waitUntil(Tellurium.enabled);
-        searchinput.sendKeys(<|"te" +SHIFT "S" -SHIFT "t" |>);
+        await searchinput.waitUntil(Tellurium.enabled, 2);
+        await searchinput.sendKeys(<|"te" +SHIFT "S" -SHIFT "t" |>);
         await sleep(1000);
         value = await searchinput.getAttribute("value");
         console.log("search input value: ",value);
@@ -30,8 +30,8 @@ Suite actionSuite {
 
     Module keyActionsModule {
         var searchinput = $("//input[@id='searchNavInput']");
-        searchinput.waitUntil(Tellurium.enabled);
-        searchinput.sendKeys(<|"test" +CONTROL LEFT -CONTROL DELETE "r"|>);
+        await searchinput.waitUntil(Tellurium.enabled, 1);
+        await searchinput.sendKeys(<|"test" +CONTROL LEFT -CONTROL DELETE "r"|>);
         await sleep(1000);
         value = await searchinput.getAttribute("value");
         console.log("search input value: ",value);
