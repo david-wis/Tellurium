@@ -10,7 +10,7 @@ Suite actionSuite {
     }
 
     Module basicStringModule {
-        var searchinput = $("//input[@id='searchNavInput']");
+        var searchinput = $("//input[@id='wordInput']");
         await searchinput.waitUntil(Tellurium.enabled, 2);
         await searchinput.sendKeys("test");
         value = await searchinput.getAttribute("value");
@@ -19,7 +19,7 @@ Suite actionSuite {
     }
 
     Module keyTextnModule {
-        var searchinput = $("//input[@id='searchNavInput']");
+        var searchinput = $("//input[@id='wordInput']");
         await searchinput.waitUntil(Tellurium.enabled, 2);
         await searchinput.sendKeys(<|"te" +SHIFT "S" -SHIFT "t" |>);
         await sleep(1000);
@@ -29,7 +29,7 @@ Suite actionSuite {
     }
 
     Module keyActionsModule {
-        var searchinput = $("//input[@id='searchNavInput']");
+        var searchinput = $("//input[@id='wordInput']");
         await searchinput.waitUntil(Tellurium.enabled, 1);
         await searchinput.sendKeys(<|"test" +CONTROL LEFT -CONTROL DELETE "r"|>);
         await sleep(1000);
@@ -38,4 +38,23 @@ Suite actionSuite {
         assertEquals value, "rest";
     }
 
+    Module keyActionsMultiplyModule {
+        var searchinput = $("//input[@id='wordInput']");
+        await searchinput.waitUntil(Tellurium.enabled, 1);
+        await searchinput.sendKeys((<|"a"|>).multiply(3));
+        await sleep(1000);
+        value = await searchinput.getAttribute("value");
+        console.log("search input value: ",value);
+        assertEquals "aaa", value;
+    }
+
+    Module keyActionsAddModule {
+        var searchinput = $("//input[@id='wordInput']");
+        await searchinput.waitUntil(Tellurium.enabled, 1);
+        await searchinput.sendKeys((<|"a" +SHIFT |>).add(<|  "b" -SHIFT |>));
+        await sleep(1000);
+        value = await searchinput.getAttribute("value");
+        console.log("search input value: ",value);
+        assertEquals "aB", value;
+    }
 }

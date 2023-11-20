@@ -31,7 +31,7 @@ function newSequence(actions) {
         multiply: (n) => {
             let result = [];
             for (let i = 0; i < n; i++) {
-                result.concat(actions);
+                result = result.concat(actions);
             }
             return newSequence(result);
         }
