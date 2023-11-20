@@ -11,7 +11,42 @@ addOne;
 addOne(3);
 sum;
 sum(3, 4);
+await sum(3, 4);
 
-var nothing = () => {};
+var nothing = async () => {};
 nothing;
 nothing();
+await nothing();
+
+
+var a = function () {
+    return 3;
+};
+
+var b = async function() {
+
+};
+
+var c = function (x,y) {
+    return 3;
+};
+
+var d = async function(z) {
+
+};
+
+var e = () => {
+    return 3;
+};
+
+var f = async () => {
+
+};
+
+var h = (x,y) => {
+    return 3;
+};
+
+var g = async (z) => {
+
+};

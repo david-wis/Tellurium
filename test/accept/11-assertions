@@ -1,0 +1,31 @@
+assertTrue true;
+assertTrue (true);
+assertTrue ((true));
+assertTrue (a());
+assertTrue a.x;
+assertTrue 1;
+assertTrue {a: 1};
+assertTrue [1, 2, 3];
+assertTrue "hola";
+assertTrue <|"hola"|>;
+
+assertFalse true;
+assertFalse (true);
+assertFalse ((true));
+assertFalse (a());
+assertFalse a.x;
+assertFalse 1;
+assertFalse {a: 1};
+assertFalse [1, 2, 3];
+assertFalse "hola";
+assertFalse <|"hola"|>;
+
+assertEquals 1, (1+1);
+assertEquals 1, {};
+assertEquals true, 1;
+assertEquals [], <|"hola"|>;
+
+assertNotEquals 1, (1+1);
+assertNotEquals 1, {};
+assertNotEquals true, 1;
+assertNotEquals [], <|"hola"|>;

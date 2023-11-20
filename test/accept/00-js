@@ -42,6 +42,5 @@ a != b;
 
 
 var a1;
-var a_1;
-var a1;
-var _a1;
+const a_1;
+let _a1;

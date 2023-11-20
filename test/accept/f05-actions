@@ -1,12 +1,12 @@
 Suite actionSuite {
 
     BeforeAll {
-        browser_start("firefox");
+        browserStartt("firefox");
         navigate("http://pawserver.it.itba.edu.ar/paw-2023b-12/search");
     }
 
     AfterAll {
-        browser_quit();
+        browserQuit();
     }
 
     Module basicStringModule {

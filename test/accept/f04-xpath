@@ -1,13 +1,13 @@
 Suite xpathSuite {
 
     BeforeAll {
-        browser_start("firefox");
+        browserStartt("firefox");
         navigate("http://pawserver.it.itba.edu.ar/paw-2023b-12/search");
     }
 
     AfterAll {
         await sleep(1000);
-        await browser_quit();
+        await browserQuit();
         console.log("closing");
     }
 

@@ -4,11 +4,11 @@ var driver;
 const TelluriumExceptions = require('selenium-webdriver/lib/error');
 var suiteName = 'Tellurium Test Suite';
 
-function browser_start(browser) {
+function browserStart(browser) {
     driver = new Selenium.Builder().forBrowser(browser).build();
 }
 
-async function browser_quit() {
+async function browserQuit() {
     await driver.close();
 }
 
@@ -26,7 +26,7 @@ function newSequence(actions) {
     return {
         actions,
         add: (sequence) => {
-            newSequence([...actions, ...sequence.actions])
+            return newSequence([...actions, ...sequence.actions])
         },
         multiply: (n) => {
             let result = [];
