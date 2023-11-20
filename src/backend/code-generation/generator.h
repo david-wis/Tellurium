@@ -4,7 +4,7 @@
 #include "../semantic-analysis/abstract-syntax-tree.h"
 #include "../support/shared.h"
 
-void generate(Program * program, const char * inputFile);
+void generate(Program * program, const char * inputFile, const char * outputDir);
 
 // general-generation.c
 void ProgramGenerate(Program * program);

@@ -1,6 +1,6 @@
 Suite Sweet {
     BeforeAll {
-        start("firefox");
+        browserStart("firefox");
         navigate("https://arcor.com/es/nuestras-marcas");
     }
 
@@ -10,8 +10,6 @@ Suite Sweet {
         assertTrue $("//div[@class='text']/p").text().contains("celíacos");
         $("]]]]").click(); // If the xpath is invalid, it is JavaScript's problem 
 
-        // wrong type is not validated in syntax, but in semantics
-        // TODO: Move this part of the test to a new reject test
         $("//*").click(); 
         $(1).click();
         $({}).click();
@@ -24,8 +22,8 @@ Suite Sweet {
     AfterAll {
         var a = "//*";
         $(a).click();
-        #(a).click();
+        #(a)[0].click();
         $((a)).click();
-        $((a).toUpper());
+        $((a).toUpperCase());
     }
 }

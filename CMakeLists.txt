@@ -67,7 +67,6 @@ add_executable(Compiler
 	src/backend/code-generation/sequence-generators.c
 	src/backend/code-generation/expression-generators.c
 	src/backend/code-generation/function-generators.c
-	# src/backend/domain-specific/calculator.c
 	src/backend/support/logger.c
 	src/backend/support/shared.c
 	src/backend/support/linkedListADT.c

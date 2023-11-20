@@ -10,8 +10,6 @@
  */
 
 #define ALL_PERMISSIONS 0777
-// TODO: Hacer que el path sea configurable.
-#define OUTPUT_DIR "output"
 
 #define TEMPLATE_PATH "src/backend/domain-specific/template.js"
 FILE * outputFile;
@@ -26,12 +24,12 @@ const char * getFileName(const char * path) {
 	return fileName;
 }
 
-void generate(Program * program, const char * inputFile) {
+void generate(Program * program, const char * inputFile, const char * outputDir) {
 	LogInfo("Generando codigo...");
 	mkdir("output", ALL_PERMISSIONS);
 	char outputPath[1024];
 	const char * fileName = getFileName(inputFile);
-	sprintf(outputPath, "%s/%s", OUTPUT_DIR, fileName);
+	sprintf(outputPath, "%s/%s", outputDir, fileName);
 	outputFile = fopen(outputPath, "w");
 	LogInfo("Generando codigo en %s", outputPath);
 	

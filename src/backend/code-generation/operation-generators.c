@@ -32,7 +32,6 @@ void UnaryOperatorGenerate(UnaryOperatorNode * unaryOperator) {
 }
 
 void BinaryOperatorGenerate(BinaryOperatorNode * binaryOperator) {
-    //TODO analizar el caso de sequence
     LogDebug("\tBinaryOperatorGenerate\n");
     switch (binaryOperator->operator) {
         case BINARY_PLUS:

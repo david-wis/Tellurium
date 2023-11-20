@@ -70,7 +70,6 @@ typedef struct VariableNode VariableNode;
 typedef struct AttributeListNode AttributeListNode;
 
 
-// TODO: Ver si conviene mover tipos de dato globales a otro archivo 
 typedef enum LiteralType {
 	L_INTEGER,
 	L_STRING,
@@ -261,13 +260,13 @@ struct ExpressionNode {
 typedef struct Declaration {
 	variable_scope_t type;
 	char * name;
-	char * op; //Nullable TODO: Revisar si es mejor usar enums 
+	char * op; //Nullable
 	ExpressionNode * expression; //Nullable
 } Declaration;
 
 struct Assignment {
 	VariableNode * variable;
-	char * op; // TODO: Revisar si es mejor usar enums 
+	char * op; 
 	ExpressionNode * expression;
 };
 

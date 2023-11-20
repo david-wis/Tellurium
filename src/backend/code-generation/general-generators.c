@@ -53,7 +53,7 @@ void ModuleGenerate(ModuleNode * module){
 		fprintf(outputFile, "tellurium_suite_state.name = \"%s\";\n", module->name);
 	}
 	else  
-		fprintf(outputFile, "tellurium_suite_state.name = \"Tellurium test module\";\n"); // TODO improve
+		fprintf(outputFile, "tellurium_suite_state.name = \"Tellurium test module\";\n");
 	fputs("tellurium_suite_state.count++;\n", outputFile);
 	fputs("//starting module\n", outputFile);
 	fputs("try ", outputFile);	

@@ -5,7 +5,6 @@
 #include "../../backend/semantic-analysis/abstract-syntax-tree.h"
 
 
-#include "../../backend/domain-specific/calculator.h"
 #include "../../backend/support/logger.h"
 #include "../../backend/support/shared.h"
 #include <stdio.h>
